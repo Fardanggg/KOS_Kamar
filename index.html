@@ -925,19 +925,7 @@
         </button>
 
         <section class="room-grid" id="roomGrid">
-            <div class="room-card" data-id="K001">
-                <h3>Kamar 001</h3>
-                <span class="status terisi">Terisi</span>
-                <p style="margin-top: 10px; font-size: 0.9em; color: var(--text-light);">Penyewa: John Doe</p>
-                <button class="action-button" data-action="view" data-id="K001">Lihat Detail</button>
-            </div>
-            <div class="room-card" data-id="K002">
-                <h3>Kamar 002</h3>
-                <span class="status kosong">Kosong</span>
-                <p style="margin-top: 10px; font-size: 0.9em; color: var(--text-light);">Kamar siap disewa</p>
-                <button class="action-button" data-action="view" data-id="K002">Lihat Detail</button>
-            </div>
-        </section>
+            </section>
     </div>
 
     <footer class="footer">
@@ -968,10 +956,10 @@
                     </div>
                 </div>
 
-                <button class="collapsible-btn">
+                <button id="collapsiblePenyewaBtn" class="collapsible-btn">
                     <i class="fas fa-user-circle"></i> Data Penyewa <i class="fas fa-chevron-down arrow"></i>
                 </button>
-                <div class="collapsible-content" id="inputPenyewaSection" style="display: none;">
+                <div class="collapsible-content" id="collapsiblePenyewaContent">
                     <div class="form-group">
                         <label for="namaPenyewa">Nama Penyewa:</label>
                         <input type="text" id="namaPenyewa" name="nama_penyewa">
@@ -984,528 +972,415 @@
                         <label for="noTelpPenyewa">Nomor Telepon:</label>
                         <input type="text" id="noTelpPenyewa" name="no_telp_penyewa">
                     </div>
-                    <div class="form-group">
-                        <label for="hargaSewa">Harga Sewa Bulanan:</label>
-                        <input type="number" id="hargaSewa" name="harga_sewa" min="0">
-                    </div>
                 </div>
 
-                <button class="collapsible-btn">
-                    <i class="fas fa-wallet"></i> Pembayaran Bulanan <i class="fas fa-chevron-down arrow"></i>
+                <button id="collapsiblePembayaranBtn" class="collapsible-btn">
+                    <i class="fas fa-wallet"></i> Pembayaran <i class="fas fa-chevron-down arrow"></i>
                 </button>
-                <div class="collapsible-content" id="pembayaranBulanan">
-                    <h5 class="section-header" style="text-align: left; margin-bottom: 15px; margin-top: 0;">Tambah Pembayaran Baru</h5>
-                    <div id="addPaymentForm">
-                        <div class="form-group-inline">
-                            <label for="paymentMonth">Bulan:</label>
-                            <input type="month" id="paymentMonth" name="payment_month">
-                        </div>
-                        <div class="form-group-inline">
-                            <label for="paymentAmount">Jumlah Bayar:</label>
-                            <input type="number" id="paymentAmount" name="payment_amount" min="0">
-                        </div>
-                        <button type="button" id="addPaymentBtn">Tambah</button>
-                    </div>
+                <div class="collapsible-content" id="collapsiblePembayaranContent">
+                    <section class="pembayaran-section">
+                        <div class="section-header">Histori Pembayaran</div>
+                        <div class="section-divider"></div>
+                        <ul id="pembayaranBulanan">
+                            </ul>
 
-                    <h5 class="section-header" style="text-align: left; margin-top: 20px; margin-bottom: 10px;">Riwayat Pembayaran</h5>
-                    <ul id="paymentList">
-                        <li>
-                            <span>Januari 2025: <strong>Rp 500.000</strong></span>
-                            <div class="payment-status-tag lunas">
-                                <i class="fas fa-check-circle"></i> Lunas
+                        <div class="section-divider"></div>
+                        <div class="section-header">Tambah Pembayaran</div>
+                        <div class="section-divider"></div>
+
+                        <form id="addPaymentForm">
+                            <div class="form-group-inline">
+                                <label for="bulanPembayaran">Bulan & Tahun:</label>
+                                <input type="month" id="bulanPembayaran" name="bulan_pembayaran" required>
                             </div>
-                            <div class="payment-item-controls">
-                                <button class="mark-lunas" data-month="2025-01">Mark Lunas</button>
-                                <button class="delete-payment" data-month="2025-01"><i class="fas fa-trash-alt"></i></button>
+                            <div class="form-group-inline">
+                                <label for="jumlahPembayaran">Jumlah (Rp):</label>
+                                <input type="number" id="jumlahPembayaran" name="jumlah_pembayaran" required min="1000">
                             </div>
-                        </li>
-                        <li>
-                            <span>Februari 2025: <strong>Rp 0</strong></span>
-                            <div class="payment-status-tag belum-lunas">
-                                <i class="fas fa-exclamation-circle"></i> Belum Lunas
-                            </div>
-                            <div class="payment-item-controls">
-                                <input type="number" placeholder="Jumlah Bayar" min="0">
-                                <button class="process-payment" data-month="2025-02">Bayar</button>
-                                <button class="delete-payment" data-month="2025-02"><i class="fas fa-trash-alt"></i></button>
-                            </div>
-                        </li>
-                        <li>
-                            <span>Maret 2025: <strong>Rp 0</strong></span>
-                            <div class="payment-status-tag jatuh-tempo">
-                                <i class="fas fa-clock"></i> Jatuh Tempo
-                            </div>
-                            <div class="payment-item-controls">
-                                <input type="number" placeholder="Jumlah Bayar" min="0">
-                                <button class="process-payment" data-month="2025-03">Bayar</button>
-                                <button class="delete-payment" data-month="2025-03"><i class="fas fa-trash-alt"></i></button>
-                            </div>
-                        </li>
-                    </ul>
+                            <button type="submit">Tambah</button>
+                        </form>
+                    </section>
                 </div>
             </div>
-
+            
             <div class="modal-footer">
-                <button type="button" class="btn-cancel" id="cancelModalBtn">Batal</button>
-                <button type="submit" class="btn-save" id="saveRoomBtn">Simpan Perubahan</button>
+                <button id="btnHapusKamar" class="btn-cancel" style="display: none;">Hapus Kamar</button>
+                <button id="btnSimpan" class="btn-save">Simpan</button>
             </div>
         </div>
     </div>
-
+    
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const kamarModal = document.getElementById('kamarModal');
-            const closeButton = document.querySelector('.close-button');
-            const addRoomBtn = document.getElementById('addRoomBtn');
-            const saveRoomBtn = document.getElementById('saveRoomBtn');
-            const cancelModalBtn = document.getElementById('cancelModalBtn');
             const roomGrid = document.getElementById('roomGrid');
+            const addRoomBtn = document.getElementById('addRoomBtn');
+            const kamarModal = document.getElementById('kamarModal');
+            const closeButton = kamarModal.querySelector('.close-button');
+            const btnSimpan = document.getElementById('btnSimpan');
+            const btnHapusKamar = document.getElementById('btnHapusKamar');
             const modalTitle = document.getElementById('modalTitle');
             const modalKamarId = document.getElementById('modalKamarId');
             const editNamaKamar = document.getElementById('editNamaKamar');
-            const statusRadios = document.querySelectorAll('input[name="kamar_status_modal"]');
-            const inputPenyewaSection = document.getElementById('inputPenyewaSection');
-            const namaPenyewaInput = document.getElementById('namaPenyewa');
-            const tanggalMasukInput = document.getElementById('tanggalMasuk');
-            const noTelpPenyewaInput = document.getElementById('noTelpPenyewa');
-            const hargaSewaInput = document.getElementById('hargaSewa');
-            const pembayaranBulanan = document.getElementById('pembayaranBulanan'); // Added for the new structure
-            const paymentMonthInput = document.getElementById('paymentMonth');
-            const paymentAmountInput = document.getElementById('paymentAmount');
-            const addPaymentBtn = document.getElementById('addPaymentBtn');
-            const paymentList = document.getElementById('paymentList');
+            const statusTersewa = document.getElementById('statusTersewa');
+            const statusBelumTersewa = document.getElementById('statusBelumTersewa');
+            const inputPenyewaSection = document.getElementById('collapsiblePenyewaContent');
+            const namaPenyewa = document.getElementById('namaPenyewa');
+            const tanggalMasuk = document.getElementById('tanggalMasuk');
+            const noTelpPenyewa = document.getElementById('noTelpPenyewa');
+            const pembayaranBulananList = document.getElementById('pembayaranBulanan');
+            const addPaymentForm = document.getElementById('addPaymentForm');
+            
+            let rooms = [];
+            const initialRoomCount = 10;
+            let currentRoomId = null;
 
-            // --- Dummy Data (Untuk Contoh) ---
-            let rooms = [
-                {
-                    id: 'K001',
-                    nama: 'Kamar 001',
-                    status: 'terisi',
-                    penyewa: {
-                        nama: 'John Doe',
-                        tanggalMasuk: '2024-01-15',
-                        noTelp: '081234567890',
-                        hargaSewa: 500000
-                    },
-                    pembayaran: [
-                        { bulan: '2024-01', jumlah: 500000, status: 'lunas' },
-                        { bulan: '2024-02', jumlah: 500000, status: 'lunas' },
-                        { bulan: '2024-03', jumlah: 500000, status: 'lunas' },
-                        { bulan: '2024-04', jumlah: 500000, status: 'lunas' },
-                        { bulan: '2024-05', jumlah: 500000, status: 'lunas' },
-                        { bulan: '2024-06', jumlah: 500000, status: 'lunas' },
-                        { bulan: '2024-07', jumlah: 500000, status: 'lunas' },
-                        { bulan: '2024-08', jumlah: 500000, status: 'lunas' },
-                        { bulan: '2024-09', jumlah: 500000, status: 'lunas' },
-                        { bulan: '2024-10', jumlah: 500000, status: 'belum-lunas' },
-                        { bulan: '2024-11', jumlah: 0, status: 'belum-lunas' },
-                        { bulan: '2024-12', jumlah: 0, status: 'jatuh-tempo' } // Example for "jatuh-tempo"
-                    ]
-                },
-                {
-                    id: 'K002',
-                    nama: 'Kamar 002',
-                    status: 'kosong',
-                    penyewa: null,
-                    pembayaran: []
-                }
-            ];
-
-            // Load data from localStorage or use dummy data
-            if (localStorage.getItem('rooms')) {
-                rooms = JSON.parse(localStorage.getItem('rooms'));
-            } else {
-                saveRoomsToLocalStorage(); // Save dummy data if none exists
-            }
-
-            function saveRoomsToLocalStorage() {
-                localStorage.setItem('rooms', JSON.stringify(rooms));
-            }
-
-            function generateRoomId() {
-                const maxIdNum = rooms.reduce((max, room) => {
-                    const num = parseInt(room.id.replace('K', ''));
-                    return num > max ? num : max;
+            // Fungsi untuk membuat ID kamar unik
+            function createRoomId() {
+                const maxId = rooms.reduce((max, room) => {
+                    const idNum = parseInt(room.id.replace('K', ''));
+                    return idNum > max ? idNum : max;
                 }, 0);
-                return 'K' + String(maxIdNum + 1).padStart(3, '0');
+                const nextId = maxId + 1;
+                return 'K' + String(nextId).padStart(3, '0');
             }
 
-            function displayRooms() {
+            // Fungsi untuk inisialisasi kamar kosong
+            function initializeRooms() {
+                rooms = [];
+                for (let i = 1; i <= initialRoomCount; i++) {
+                    const newRoom = {
+                        id: 'K' + String(i).padStart(3, '0'),
+                        name: 'Kamar ' + String(i).padStart(3, '0'),
+                        status: 'kosong',
+                        penyewa: {
+                            nama: '',
+                            tanggalMasuk: '',
+                            noTelp: ''
+                        },
+                        pembayaran: []
+                    };
+                    rooms.push(newRoom);
+                }
+                renderRooms();
+            }
+
+            // Fungsi untuk menyimpan data ke Local Storage
+            function saveRooms() {
+                localStorage.setItem('kamarKosData', JSON.stringify(rooms));
+            }
+
+            // Fungsi untuk memuat data dari Local Storage
+            function loadRooms() {
+                const data = localStorage.getItem('kamarKosData');
+                if (data) {
+                    rooms = JSON.parse(data);
+                } else {
+                    initializeRooms();
+                }
+                renderRooms();
+            }
+
+            // Fungsi untuk merender daftar kamar
+            function renderRooms() {
                 roomGrid.innerHTML = '';
                 rooms.forEach(room => {
                     const roomCard = document.createElement('div');
-                    roomCard.classList.add('room-card');
+                    roomCard.className = 'room-card';
                     roomCard.setAttribute('data-id', room.id);
 
-                    let statusClass = room.status === 'terisi' ? 'terisi' : 'kosong';
-                    let statusText = room.status === 'terisi' ? 'Terisi' : 'Kosong';
-                    let penyewaInfo = room.penyewa ? `<p style="margin-top: 10px; font-size: 0.9em; color: var(--text-light);">Penyewa: ${room.penyewa.nama}</p>` : `<p style="margin-top: 10px; font-size: 0.9em; color: var(--text-light);">Kamar siap disewa</p>`;
+                    const statusClass = room.status === 'kosong' ? 'kosong' : 'terisi';
+                    const tenantInfo = room.status === 'terisi' && room.penyewa.nama ? `<p style="margin-top: 10px; font-size: 0.9em; color: var(--text-light);">Penyewa: ${room.penyewa.nama}</p>` : `<p style="margin-top: 10px; font-size: 0.9em; color: var(--text-light);">Kamar siap disewa</p>`;
 
                     roomCard.innerHTML = `
-                        <h3>${room.nama}</h3>
-                        <span class="status ${statusClass}">${statusText}</span>
-                        ${penyewaInfo}
+                        <h3>${room.name}</h3>
+                        <span class="status ${statusClass}">${room.status === 'kosong' ? 'Kosong' : 'Terisi'}</span>
+                        ${tenantInfo}
                         <button class="action-button" data-action="view" data-id="${room.id}">Lihat Detail</button>
                     `;
                     roomGrid.appendChild(roomCard);
                 });
-                attachRoomCardListeners();
             }
 
-            function attachRoomCardListeners() {
-                document.querySelectorAll('.room-card .action-button').forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        const roomId = event.target.dataset.id;
-                        openModalForRoom(roomId);
-                    });
-                });
-            }
-
-            function openModalForRoom(roomId) {
-                const room = rooms.find(r => r.id === roomId);
-                if (room) {
-                    modalTitle.textContent = room.nama;
-                    modalKamarId.value = room.id;
-                    editNamaKamar.value = room.nama;
-
-                    statusRadios.forEach(radio => {
-                        radio.checked = (radio.value === room.status);
-                    });
-
-                    togglePenyewaSection(room.status === 'terisi');
-
-                    if (room.status === 'terisi' && room.penyewa) {
-                        namaPenyewaInput.value = room.penyewa.nama || '';
-                        tanggalMasukInput.value = room.penyewa.tanggalMasuk || '';
-                        noTelpPenyewaInput.value = room.penyewa.noTelp || '';
-                        hargaSewaInput.value = room.penyewa.hargaSewa || '';
-                    } else {
-                        namaPenyewaInput.value = '';
-                        tanggalMasukInput.value = '';
-                        noTelpPenyewaInput.value = '';
-                        hargaSewaInput.value = '';
+            // Fungsi untuk membuka modal
+            function openModal(mode, roomId = null) {
+                kamarModal.classList.add('active');
+                if (mode === 'add') {
+                    modalTitle.textContent = 'Tambah Kamar Baru';
+                    modalKamarId.value = '';
+                    editNamaKamar.value = '';
+                    statusBelumTersewa.checked = true;
+                    namaPenyewa.value = '';
+                    tanggalMasuk.value = '';
+                    noTelpPenyewa.value = '';
+                    inputPenyewaSection.style.display = 'block';
+                    pembayaranBulananList.innerHTML = '';
+                    addPaymentForm.style.display = 'none';
+                    btnHapusKamar.style.display = 'none';
+                    updatePenyewaSectionVisibility();
+                } else if (mode === 'edit') {
+                    currentRoomId = roomId;
+                    modalKamarId.value = roomId;
+                    const room = rooms.find(r => r.id === roomId);
+                    if (room) {
+                        modalTitle.textContent = 'Detail Kamar ' + room.name;
+                        editNamaKamar.value = room.name;
+                        if (room.status === 'terisi') {
+                            statusTersewa.checked = true;
+                        } else {
+                            statusBelumTersewa.checked = true;
+                        }
+                        namaPenyewa.value = room.penyewa.nama;
+                        tanggalMasuk.value = room.penyewa.tanggalMasuk;
+                        noTelpPenyewa.value = room.penyewa.noTelp;
+                        inputPenyewaSection.style.display = 'block';
+                        btnHapusKamar.style.display = 'block';
+                        addPaymentForm.style.display = room.status === 'terisi' ? 'flex' : 'none';
+                        renderPayments(room.pembayaran);
+                        updatePenyewaSectionVisibility();
                     }
-
-                    displayPayments(room.pembayaran);
-                    kamarModal.classList.add('active');
-                } else {
-                    console.error("Kamar tidak ditemukan:", roomId);
                 }
             }
 
-            function openAddRoomModal() {
-                modalTitle.textContent = 'Tambah Kamar Baru';
-                modalKamarId.value = '';
-                editNamaKamar.value = '';
-                statusRadios[1].checked = true; // Default to 'Kosong'
-                togglePenyewaSection(false);
-                namaPenyewaInput.value = '';
-                tanggalMasukInput.value = '';
-                noTelpPenyewaInput.value = '';
-                hargaSewaInput.value = '';
-                displayPayments([]); // Clear payment list for new room
-                kamarModal.classList.add('active');
-            }
-
+            // Fungsi untuk menutup modal
             function closeModal() {
                 kamarModal.classList.remove('active');
-                resetCollapsibleSections(); // Reset collapsible sections on close
             }
 
-            function togglePenyewaSection(isTerisi) {
-                // Sembunyikan/tampilkan bagian Data Penyewa dan Pembayaran Bulanan
-                // Collapsible button untuk Data Penyewa
-                const penyewaCollapsibleBtn = document.querySelector('.collapsible-btn:nth-of-type(1)');
-                const pembayaranCollapsibleBtn = document.querySelector('.collapsible-btn:nth-of-type(2)');
-
-                if (isTerisi) {
-                    penyewaCollapsibleBtn.style.display = 'flex';
-                    pembayaranCollapsibleBtn.style.display = 'flex';
-                } else {
-                    penyewaCollapsibleBtn.style.display = 'none';
-                    pembayaranCollapsibleBtn.style.display = 'none';
-                    // Pastikan konten collapsible tertutup dan tidak aktif
-                    if (inputPenyewaSection.classList.contains('active')) {
-                        penyewaCollapsibleBtn.click();
-                    }
-                    if (pembayaranBulanan.classList.contains('active')) {
-                        pembayaranCollapsibleBtn.click();
-                    }
-                }
-            }
-
-            function resetCollapsibleSections() {
-                document.querySelectorAll('.collapsible-btn.active').forEach(button => {
-                    button.classList.remove('active');
-                    const content = button.nextElementSibling;
-                    content.classList.remove('active');
-                    content.style.maxHeight = null;
-                    content.style.padding = '0 18px';
-                    content.style.display = 'none'; // Ensure it's hidden after transition
-                });
-            }
-
-            function displayPayments(payments) {
-                paymentList.innerHTML = '';
-                if (!payments || payments.length === 0) {
-                    paymentList.innerHTML = '<li style="text-align: center; color: var(--text-light);">Belum ada riwayat pembayaran.</li>';
+            // Fungsi untuk merender daftar pembayaran
+            function renderPayments(payments) {
+                pembayaranBulananList.innerHTML = '';
+                if (payments.length === 0) {
+                    pembayaranBulananList.innerHTML = '<p style="color: var(--text-light); text-align: center;">Belum ada riwayat pembayaran.</p>';
                     return;
                 }
-
-                // Sort payments by month descending
-                payments.sort((a, b) => new Date(b.bulan) - new Date(a.bulan));
 
                 payments.forEach(payment => {
                     const li = document.createElement('li');
                     const paymentDate = new Date(payment.bulan);
-                    const monthName = paymentDate.toLocaleString('id-ID', { month: 'long', year: 'numeric' });
-                    const formattedAmount = new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(payment.jumlah);
+                    const formattedDate = new Intl.DateTimeFormat('id-ID', { year: 'numeric', month: 'long' }).format(paymentDate);
 
-                    let statusTagClass = '';
-                    let statusTagText = '';
-                    let statusIcon = '';
-
-                    switch (payment.status) {
-                        case 'lunas':
-                            statusTagClass = 'lunas';
-                            statusTagText = 'Lunas';
-                            statusIcon = '<i class="fas fa-check-circle"></i>';
-                            break;
-                        case 'belum-lunas':
-                            statusTagClass = 'belum-lunas';
-                            statusTagText = 'Belum Lunas';
-                            statusIcon = '<i class="fas fa-exclamation-circle"></i>';
-                            break;
-                        case 'jatuh-tempo':
-                            statusTagClass = 'jatuh-tempo';
-                            statusTagText = 'Jatuh Tempo';
-                            statusIcon = '<i class="fas fa-clock"></i>';
-                            break;
+                    let statusText = 'Belum Lunas';
+                    let statusClass = 'belum-lunas';
+                    
+                    if (payment.status === 'lunas') {
+                        statusText = 'Lunas';
+                        statusClass = 'lunas';
+                    } else {
+                        // Cek apakah sudah jatuh tempo (bulan ini atau sebelumnya)
+                        const today = new Date();
+                        const paymentMonth = paymentDate.getMonth();
+                        const paymentYear = paymentDate.getFullYear();
+                        const currentMonth = today.getMonth();
+                        const currentYear = today.getFullYear();
+                        
+                        if (paymentYear < currentYear || (paymentYear === currentYear && paymentMonth <= currentMonth)) {
+                            statusText = 'Jatuh Tempo';
+                            statusClass = 'jatuh-tempo';
+                        }
                     }
 
                     li.innerHTML = `
-                        <span>${monthName}: <strong>${formattedAmount}</strong></span>
-                        <div class="payment-status-tag ${statusTagClass}">
-                            ${statusIcon} ${statusTagText}
-                        </div>
+                        <span><strong>Bulan:</strong> ${formattedDate}</span>
+                        <span><strong>Jumlah:</strong> Rp${payment.jumlah.toLocaleString('id-ID')}</span>
+                        <span class="payment-status-tag ${statusClass}">${statusText}</span>
                         <div class="payment-item-controls">
-                            ${payment.status !== 'lunas' ? `<input type="number" placeholder="Jumlah Bayar" min="0" value="${payment.jumlah > 0 ? payment.jumlah : ''}" data-month="${payment.bulan}">` : ''}
-                            ${payment.status !== 'lunas' ? `<button class="process-payment" data-month="${payment.bulan}">Bayar</button>` : ''}
-                            <button class="delete-payment" data-month="${payment.bulan}"><i class="fas fa-trash-alt"></i></button>
-                            ${payment.status === 'belum-lunas' || payment.status === 'jatuh-tempo' ? `<button class="mark-lunas" data-month="${payment.bulan}">Mark Lunas</button>` : ''}
+                            <button class="mark-as-paid" data-id="${payment.bulan}" ${payment.status === 'lunas' ? 'disabled' : ''}>${payment.status === 'lunas' ? 'Lunas' : 'Bayar'}</button>
+                            <button class="delete-payment" data-id="${payment.bulan}"><i class="fas fa-trash-alt"></i></button>
                         </div>
                     `;
-                    paymentList.appendChild(li);
-                });
-                attachPaymentListeners();
-            }
-
-            function attachPaymentListeners() {
-                paymentList.querySelectorAll('.process-payment').forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        const month = event.target.dataset.month;
-                        const input = event.target.previousElementSibling;
-                        const amount = parseInt(input.value);
-                        if (!isNaN(amount) && amount > 0) {
-                            processPayment(modalKamarId.value, month, amount);
-                        } else {
-                            alert('Masukkan jumlah pembayaran yang valid.');
-                        }
-                    });
-                });
-
-                paymentList.querySelectorAll('.mark-lunas').forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        const month = event.target.dataset.month;
-                        markPaymentAsLunas(modalKamarId.value, month);
-                    });
-                });
-
-                paymentList.querySelectorAll('.delete-payment').forEach(button => {
-                    button.addEventListener('click', (event) => {
-                        const month = event.target.dataset.month;
-                        if (confirm(`Anda yakin ingin menghapus pembayaran untuk bulan ${new Date(month).toLocaleString('id-ID', { month: 'long', year: 'numeric' })}?`)) {
-                            deletePayment(modalKamarId.value, month);
-                        }
-                    });
+                    pembayaranBulananList.appendChild(li);
                 });
             }
 
-            function processPayment(roomId, month, amount) {
-                const room = rooms.find(r => r.id === roomId);
-                if (room && room.penyewa) {
-                    const paymentIndex = room.pembayaran.findIndex(p => p.bulan === month);
-                    if (paymentIndex !== -1) {
-                        const previousAmount = room.pembayaran[paymentIndex].jumlah || 0;
-                        const newTotalAmount = previousAmount + amount;
+            // Fungsi untuk mengupdate visibilitas form penyewa
+            function updatePenyewaSectionVisibility() {
+                const isTerisi = statusTersewa.checked;
+                const paymentSection = document.getElementById('collapsiblePembayaranBtn').parentNode;
+                const addPaymentForm = document.getElementById('addPaymentForm');
 
-                        if (newTotalAmount >= room.penyewa.hargaSewa) {
-                            room.pembayaran[paymentIndex].jumlah = room.penyewa.hargaSewa;
-                            room.pembayaran[paymentIndex].status = 'lunas';
-                            alert(`Pembayaran bulan ${new Date(month).toLocaleString('id-ID', { month: 'long' })} sejumlah ${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount)} berhasil! Status: Lunas.`);
-                        } else {
-                            room.pembayaran[paymentIndex].jumlah = newTotalAmount;
-                            room.pembayaran[paymentIndex].status = 'belum-lunas';
-                            alert(`Pembayaran bulan ${new Date(month).toLocaleString('id-ID', { month: 'long' })} sejumlah ${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(amount)} berhasil. Sisa: ${new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(room.penyewa.hargaSewa - newTotalAmount)}`);
-                        }
-                        saveRoomsToLocalStorage();
-                        displayPayments(room.pembayaran);
-                        displayRooms(); // Update room status if needed
-                    }
-                }
-            }
-
-            function markPaymentAsLunas(roomId, month) {
-                const room = rooms.find(r => r.id === roomId);
-                if (room && room.penyewa) {
-                    const paymentIndex = room.pembayaran.findIndex(p => p.bulan === month);
-                    if (paymentIndex !== -1) {
-                        room.pembayaran[paymentIndex].jumlah = room.penyewa.hargaSewa;
-                        room.pembayaran[paymentIndex].status = 'lunas';
-                        alert(`Pembayaran bulan ${new Date(month).toLocaleString('id-ID', { month: 'long' })} berhasil ditandai sebagai LUNAS.`);
-                        saveRoomsToLocalStorage();
-                        displayPayments(room.pembayaran);
-                        displayRooms();
-                    }
-                }
-            }
-
-            function deletePayment(roomId, month) {
-                const room = rooms.find(r => r.id === roomId);
-                if (room) {
-                    room.pembayaran = room.pembayaran.filter(p => p.bulan !== month);
-                    saveRoomsToLocalStorage();
-                    displayPayments(room.pembayaran);
-                }
-            }
-
-            addPaymentBtn.addEventListener('click', () => {
-                const roomId = modalKamarId.value;
-                const month = paymentMonthInput.value;
-                const amount = parseInt(paymentAmountInput.value);
-
-                if (roomId && month && !isNaN(amount) && amount >= 0) {
-                    const room = rooms.find(r => r.id === roomId);
-                    if (room) {
-                        const existingPayment = room.pembayaran.find(p => p.bulan === month);
-                        if (existingPayment) {
-                            alert('Pembayaran untuk bulan ini sudah ada. Silakan edit atau proses pembayaran yang sudah ada.');
-                        } else {
-                            const newPayment = {
-                                bulan: month,
-                                jumlah: amount,
-                                status: (amount >= room.penyewa.hargaSewa ? 'lunas' : 'belum-lunas') // Adjust status based on amount
-                            };
-                            room.pembayaran.push(newPayment);
-                            saveRoomsToLocalStorage();
-                            displayPayments(room.pembayaran);
-                            paymentMonthInput.value = '';
-                            paymentAmountInput.value = '';
-                        }
-                    }
+                if (isTerisi) {
+                    inputPenyewaSection.style.display = 'block';
+                    addPaymentForm.style.display = 'flex';
                 } else {
-                    alert('Harap lengkapi bulan dan jumlah pembayaran.');
+                    inputPenyewaSection.style.display = 'none';
+                    addPaymentForm.style.display = 'none';
+                }
+            }
+
+            // Event listener untuk tombol "Tambah Kamar"
+            addRoomBtn.addEventListener('click', () => {
+                openModal('add');
+            });
+
+            // Event listener untuk tombol "Lihat Detail"
+            roomGrid.addEventListener('click', (e) => {
+                if (e.target.classList.contains('action-button') && e.target.dataset.action === 'view') {
+                    const roomId = e.target.dataset.id;
+                    openModal('edit', roomId);
                 }
             });
 
-            // Event Listeners
-            addRoomBtn.addEventListener('click', openAddRoomModal);
+            // Event listener untuk tombol "Tutup Modal"
             closeButton.addEventListener('click', closeModal);
-            cancelModalBtn.addEventListener('click', closeModal);
+            window.addEventListener('click', (e) => {
+                if (e.target === kamarModal) {
+                    closeModal();
+                }
+            });
 
-            saveRoomBtn.addEventListener('click', () => {
-                const id = modalKamarId.value;
+            // Event listener untuk tombol "Simpan" di modal
+            btnSimpan.addEventListener('click', () => {
                 const nama = editNamaKamar.value;
-                const status = document.querySelector('input[name="kamar_status_modal"]:checked').value;
+                const status = statusTersewa.checked ? 'terisi' : 'kosong';
+                const namaPenyewaVal = namaPenyewa.value;
+                const tanggalMasukVal = tanggalMasuk.value;
+                const noTelpPenyewaVal = noTelpPenyewa.value;
 
                 if (!nama) {
-                    alert('Nama Kamar harus diisi!');
+                    alert('Nama kamar harus diisi!');
                     return;
                 }
 
-                let roomIndex = rooms.findIndex(r => r.id === id);
-                let currentRoom;
-
-                if (roomIndex === -1) { // Adding new room
-                    const newId = generateRoomId();
-                    currentRoom = {
-                        id: newId,
-                        nama: nama,
-                        status: status,
-                        penyewa: null,
-                        pembayaran: []
-                    };
-                    rooms.push(currentRoom);
-                } else { // Editing existing room
-                    currentRoom = rooms[roomIndex];
-                    currentRoom.nama = nama;
-                    currentRoom.status = status;
-                }
-
-                if (status === 'terisi') {
-                    if (!namaPenyewaInput.value || !tanggalMasukInput.value || !hargaSewaInput.value) {
-                        alert('Data Penyewa (Nama, Tanggal Masuk, Harga Sewa) harus diisi jika status Terisi!');
-                        return;
-                    }
-                    currentRoom.penyewa = {
-                        nama: namaPenyewaInput.value,
-                        tanggalMasuk: tanggalMasukInput.value,
-                        noTelp: noTelpPenyewaInput.value,
-                        hargaSewa: parseInt(hargaSewaInput.value)
-                    };
-                    // Generate initial payments if none exist for a new tenant
-                    if (currentRoom.pembayaran.length === 0) {
-                        const currentMonth = new Date().toISOString().slice(0, 7);
-                        currentRoom.pembayaran.push({
-                            bulan: currentMonth,
-                            jumlah: 0,
-                            status: 'jatuh-tempo'
-                        });
+                if (currentRoomId) {
+                    // Mode Edit
+                    const roomIndex = rooms.findIndex(r => r.id === currentRoomId);
+                    if (roomIndex !== -1) {
+                        rooms[roomIndex].name = nama;
+                        rooms[roomIndex].status = status;
+                        rooms[roomIndex].penyewa = {
+                            nama: status === 'terisi' ? namaPenyewaVal : '',
+                            tanggalMasuk: status === 'terisi' ? tanggalMasukVal : '',
+                            noTelp: status === 'terisi' ? noTelpPenyewaVal : ''
+                        };
+                        // Jika status diubah menjadi kosong, hapus data pembayaran dan penyewa
+                        if (status === 'kosong') {
+                             rooms[roomIndex].penyewa = { nama: '', tanggalMasuk: '', noTelp: '' };
+                             rooms[roomIndex].pembayaran = [];
+                        }
                     }
                 } else {
-                    currentRoom.penyewa = null;
-                    currentRoom.pembayaran = []; // Clear payments if room becomes empty
+                    // Mode Tambah
+                    const newRoom = {
+                        id: createRoomId(),
+                        name: nama,
+                        status: status,
+                        penyewa: {
+                            nama: status === 'terisi' ? namaPenyewaVal : '',
+                            tanggalMasuk: status === 'terisi' ? tanggalMasukVal : '',
+                            noTelp: status === 'terisi' ? noTelpPenyewaVal : ''
+                        },
+                        pembayaran: []
+                    };
+                    rooms.push(newRoom);
                 }
 
-                saveRoomsToLocalStorage();
-                displayRooms();
+                saveRooms();
+                renderRooms();
                 closeModal();
-                alert('Kamar berhasil disimpan!');
             });
 
-            // Event listener for status radio buttons to show/hide penyewa section
+            // Event listener untuk tombol "Hapus Kamar"
+            btnHapusKamar.addEventListener('click', () => {
+                if (confirm('Apakah Anda yakin ingin menghapus kamar ini? Tindakan ini tidak dapat dibatalkan.')) {
+                    rooms = rooms.filter(room => room.id !== currentRoomId);
+                    saveRooms();
+                    renderRooms();
+                    closeModal();
+                }
+            });
+
+            // Event listener untuk radio button status di modal
+            const statusRadios = document.querySelectorAll('input[name="kamar_status_modal"]');
             statusRadios.forEach(radio => {
-                radio.addEventListener('change', (event) => {
-                    togglePenyewaSection(event.target.value === 'terisi');
-                });
+                radio.addEventListener('change', updatePenyewaSectionVisibility);
             });
 
-            // --- Collapsible Logic ---
-            const collapsibleButtons = document.querySelectorAll(".collapsible-btn");
+            // Event listener untuk form tambah pembayaran
+            addPaymentForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const bulan = document.getElementById('bulanPembayaran').value;
+                const jumlah = parseInt(document.getElementById('jumlahPembayaran').value);
 
-            collapsibleButtons.forEach(button => {
-                button.addEventListener("click", function() {
-                    this.classList.toggle("active");
-                    const content = this.nextElementSibling;
+                if (!bulan || isNaN(jumlah) || jumlah <= 0) {
+                    alert('Bulan dan jumlah pembayaran harus diisi dengan benar.');
+                    return;
+                }
 
-                    if (content.style.maxHeight) {
-                        content.style.maxHeight = null;
-                        content.style.padding = '0 18px';
-                        setTimeout(() => { // Delay hiding display to allow transition
-                            content.style.display = 'none';
-                        }, 300); // Should match transition duration
-                    } else {
-                        content.style.display = 'block';
-                        // Force reflow
-                        void content.offsetWidth;
-                        content.style.maxHeight = content.scrollHeight + 30 + "px"; // +30 for padding
-                        content.style.padding = '15px 18px';
+                const roomIndex = rooms.findIndex(r => r.id === currentRoomId);
+                if (roomIndex !== -1) {
+                    const newPayment = {
+                        bulan: bulan + '-01', // Tambahkan hari agar valid
+                        jumlah: jumlah,
+                        status: 'lunas',
+                        tanggalBayar: new Date().toISOString().slice(0, 10)
+                    };
+
+                    // Cek duplikasi pembayaran untuk bulan yang sama
+                    const existingPaymentIndex = rooms[roomIndex].pembayaran.findIndex(p => p.bulan === newPayment.bulan);
+                    if (existingPaymentIndex !== -1) {
+                        alert('Pembayaran untuk bulan ini sudah ada. Silakan edit atau hapus yang sudah ada.');
+                        return;
                     }
-                });
+
+                    rooms[roomIndex].pembayaran.push(newPayment);
+                    rooms[roomIndex].pembayaran.sort((a, b) => new Date(a.bulan) - new Date(b.bulan));
+                    saveRooms();
+                    renderPayments(rooms[roomIndex].pembayaran);
+                    addPaymentForm.reset();
+                }
             });
 
-            // Initial display
-            displayRooms();
+            // Event listener untuk tombol "Bayar" dan "Hapus" pada daftar pembayaran
+            pembayaranBulananList.addEventListener('click', (e) => {
+                const target = e.target;
+                const room = rooms.find(r => r.id === currentRoomId);
+
+                if (!room) return;
+
+                if (target.classList.contains('mark-as-paid')) {
+                    const bulanId = target.dataset.id;
+                    const paymentIndex = room.pembayaran.findIndex(p => p.bulan === bulanId);
+                    if (paymentIndex !== -1) {
+                        room.pembayaran[paymentIndex].status = 'lunas';
+                        room.pembayaran[paymentIndex].tanggalBayar = new Date().toISOString().slice(0, 10);
+                        saveRooms();
+                        renderPayments(room.pembayaran);
+                    }
+                } else if (target.closest('.delete-payment')) {
+                    const bulanId = target.closest('.delete-payment').dataset.id;
+                    if (confirm('Apakah Anda yakin ingin menghapus pembayaran ini?')) {
+                        room.pembayaran = room.pembayaran.filter(p => p.bulan !== bulanId);
+                        saveRooms();
+                        renderPayments(room.pembayaran);
+                    }
+                }
+            });
+
+            // Collapsible / Accordion
+            const collapsiblePenyewaBtn = document.getElementById('collapsiblePenyewaBtn');
+            const collapsiblePembayaranBtn = document.getElementById('collapsiblePembayaranBtn');
+
+            collapsiblePenyewaBtn.addEventListener('click', () => {
+                const content = document.getElementById('collapsiblePenyewaContent');
+                content.classList.toggle('active');
+                collapsiblePenyewaBtn.classList.toggle('active');
+            });
+            
+            collapsiblePembayaranBtn.addEventListener('click', () => {
+                const content = document.getElementById('collapsiblePembayaranContent');
+                content.classList.toggle('active');
+                collapsiblePembayaranBtn.classList.toggle('active');
+            });
+            
+            // Hamburger menu functionality (sudah ada di kode Anda)
+            const hamburger = document.querySelector('.hamburger');
+            const navLinks = document.querySelector('.nav-links');
+            hamburger.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+            });
+
+            // Inisialisasi aplikasi saat dimuat
+            loadRooms();
         });
     </script>
 </body>
