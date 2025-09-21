@@ -1,15 +1,16 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // Kalau sudah login, langsung ke kosa_lama.html
+    // Kalau SUDAH login → langsung ke kosa_lama
     if (localStorage.getItem("sessionLoginKosa1") === "true") {
       window.location.href = "kosa_lama.html";
+      return;
     }
 
     // Tombol login → set session
     const loginBtn = document.getElementById("loginBtn1");
     if (loginBtn) {
       loginBtn.addEventListener("click", function (e) {
-        e.preventDefault(); // cegah refresh
+        e.preventDefault();
         localStorage.setItem("sessionLoginKosa1", "true");
         window.location.href = "kosa_lama.html";
       });
