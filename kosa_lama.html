@@ -1,8 +1,9 @@
 <script>
   document.addEventListener("DOMContentLoaded", function () {
-    // Kalau belum login, balikin ke index
+    // Kalau BELUM login → balikin ke index
     if (localStorage.getItem("sessionLoginKosa1") !== "true") {
       window.location.href = "index.html";
+      return;
     }
 
     // Tombol logout → hapus session
