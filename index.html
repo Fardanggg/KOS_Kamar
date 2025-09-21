@@ -1,3 +1,17 @@
+<script>
+  // Kalau sudah login, langsung ke kosa_lama.html
+  if (localStorage.getItem("sessionLoginKosa") === "true") {
+    window.location.href = "kosa_lama.html";
+  }
+
+  // Tombol login → set session
+  document.getElementById("loginBtn1").addEventListener("click", function (e) {
+    e.preventDefault(); // cegah link langsung jalan
+    localStorage.setItem("sessionLoginKosa", "true");
+    window.location.href = "kosa_lama.html";
+  });
+</script>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -934,7 +948,11 @@
     <nav class="navbar">
         <a href="#" class="logo">KOSKU</a>
         <ul class="nav-links">
-            <li><a href="kosa_lama.html">Web Kos Lama</a></li>
+            <li>
+  <a href="#" id="loginBtn1" class="btn-add-room">
+    <i class="fas fa-sign-in-alt"></i> Web Kos Lama
+  </a>
+</li>
             <li><a href="#">Beranda</a></li>
             <li><a href="#"></a></li>
         </ul>
