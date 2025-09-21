@@ -992,8 +992,7 @@
         </div>
     </div>
 
-   
-    <script>
+  <script>
         // DOM Elements
         const navbar = document.querySelector('.navbar');
         const navLinks = document.querySelector('.nav-links');
@@ -1342,97 +1341,108 @@
         });
 
        // --- Generate Payments Function ---
-function generatePaymentsForTenant(tenantId, entryDateStr, rentPrice) {
-    const entryDate = new Date(entryDateStr);
-    const today = new Date();
-    today.setDate(1); 
-    today.setHours(0,0,0,0);
+    function generatePaymentsForTenant(tenantId, entryDateStr, rentPrice) {
+        const entryDate = new Date(entryDateStr);
+        const today = new Date();
+        today.setDate(1); 
+        today.setHours(0,0,0,0);
 
-    let currentMonth = new Date(entryDate.getFullYear(), entryDate.getMonth(), 1);
-    currentMonth.setHours(0,0,0,0);
+        let currentMonth = new Date(entryDate.getFullYear(), entryDate.getMonth(), 1);
+        currentMonth.setHours(0,0,0,0);
 
-    while (currentMonth <= today) {
-        const monthYear = `${currentMonth.getFullYear()}-${(currentMonth.getMonth() + 1).toString().padStart(2, '0')}`;
+        while (currentMonth <= today) {
+            const monthYear = `${currentMonth.getFullYear()}-${(currentMonth.getMonth() + 1).toString().padStart(2, '0')}`;
 
-        const existingPayment = paymentsData.find(
-            p => p.tenantId === tenantId && p.monthYear === monthYear
-        );
-
-        if (!existingPayment) {
-            // Jatuh tempo mengikuti tanggal masuk penyewa
-            const dueDate = new Date(
-                currentMonth.getFullYear(),
-                currentMonth.getMonth(),
-                entryDate.getDate()
+            const existingPayment = paymentsData.find(
+                p => p.tenantId === tenantId && p.monthYear === monthYear
             );
 
-            const newPaymentId = generateUniqueId(paymentsData);
-            paymentsData.push({
-                id: newPaymentId,
-                tenantId: tenantId,
-                monthYear: monthYear,
-                jumlah_bayar_expected: rentPrice,
-                amountPaid: 0,
-                paymentDate: null,
-                dueDate: dueDate.toISOString().split('T')[0],
-                status: 'belum_lunas'
-            });
+            if (!existingPayment) {
+                // Jatuh tempo mengikuti tanggal masuk penyewa
+                const dueDate = new Date(
+                    currentMonth.getFullYear(),
+                    currentMonth.getMonth(),
+                    entryDate.getDate()
+                );
+
+                const newPaymentId = generateUniqueId(paymentsData);
+                paymentsData.push({
+                    id: newPaymentId,
+                    tenantId: tenantId,
+                    monthYear: monthYear,
+                    jumlah_bayar_expected: rentPrice,
+                    amountPaid: 0,
+                    paymentDate: null,
+                    dueDate: dueDate.toISOString().split('T')[0],
+                    status: 'belum_lunas'
+                });
+            }
+            currentMonth.setMonth(currentMonth.getMonth() + 1);
         }
-        currentMonth.setMonth(currentMonth.getMonth() + 1);
+        // Data akan disimpan lewat saveDataToLocalStorage setelah dipanggil
     }
-    // Data akan disimpan lewat saveDataToLocalStorage setelah dipanggil
-}
 
-        // --- Add Custom Payment ---
-        addPaymentBtnPayment.addEventListener('click', function() {
-            const tenantId = parseInt(addPaymentBtnPayment.dataset.tenantId);
-            const monthYear = paymentMonthInput.value;
-            const amount = parseFloat(paymentAmountInput.value);
+    // --- Add Custom Payment ---
+    addPaymentBtnPayment.addEventListener('click', function() {
+        const tenantId = parseInt(addPaymentBtnPayment.dataset.tenantId);
+        const monthYear = paymentMonthInput.value;
+        const amount = parseFloat(paymentAmountInput.value);
 
-            if (!tenantId || isNaN(tenantId)) {
-                alert('Tenant ID tidak ditemukan. Mohon ulangi proses atau simpan data penyewa terlebih dahulu.');
-                return;
-            }
-            if (!monthYear) {
-                alert('Pilih bulan pembayaran.');
-                return;
-            }
-            if (isNaN(amount) || amount <= 0) {
-                alert('Masukkan jumlah pembayaran yang valid.');
-                return;
-            }
+        if (!tenantId || isNaN(tenantId)) {
+            alert('Tenant ID tidak ditemukan. Mohon ulangi proses atau simpan data penyewa terlebih dahulu.');
+            return;
+        }
+        if (!monthYear) {
+            alert('Pilih bulan pembayaran.');
+            return;
+        }
+        if (isNaN(amount) || amount <= 0) {
+            alert('Masukkan jumlah pembayaran yang valid.');
+            return;
+        }
 
-            const existingPayment = paymentsData.find(p => p.tenantId === tenantId && p.monthYear === monthYear);
+        const existingPayment = paymentsData.find(p => p.tenantId === tenantId && p.monthYear === monthYear);
 
-            if (existingPayment) {
-                alert(`Pembayaran untuk bulan ${new Date(monthYear + '-01').toLocaleString('id-ID', { month: 'long', year: 'numeric' })} sudah ada.`);
-                return;
-            }
+        if (existingPayment) {
+            alert(`Pembayaran untuk bulan ${new Date(monthYear + '-01').toLocaleString('id-ID', { month: 'long', year: 'numeric' })} sudah ada.`);
+            return;
+        }
 
-            const newPaymentId = generateUniqueId(paymentsData);
-            const dueDate = new Date(new Date(monthYear + '-01').getFullYear(), new Date(monthYear + '-01').getMonth(), 20);
-            
-            paymentsData.push({
-                id: newPaymentId,
-                tenantId: tenantId,
-                monthYear: monthYear,
-                jumlah_bayar_expected: amount,
-                amountPaid: 0,
-                paymentDate: null,
-                dueDate: dueDate.toISOString().split('T')[0],
-                status: 'belum_lunas'
-            });
+        const tenant = tenantsData.find(t => t.id === tenantId);
+        if (!tenant) {
+            alert("Data penyewa tidak ditemukan.");
+            return;
+        }
 
-            saveDataToLocalStorage();
-            alert('Pembayaran baru berhasil ditambahkan.');
-            
-            const room = roomsData.find(r => r.tenantId === tenantId);
-            if (room) {
-                 loadKamarDetails(room.id, room.status); 
-            }
-            paymentMonthInput.value = '';
-            paymentAmountInput.value = '';
+        // Jatuh tempo sesuai tanggal masuk penyewa
+        const dueDate = new Date(
+            new Date(monthYear + '-01').getFullYear(),
+            new Date(monthYear + '-01').getMonth(),
+            new Date(tenant.entryDate).getDate()
+        );
+
+        const newPaymentId = generateUniqueId(paymentsData);
+        paymentsData.push({
+            id: newPaymentId,
+            tenantId: tenantId,
+            monthYear: monthYear,
+            jumlah_bayar_expected: amount,
+            amountPaid: 0,
+            paymentDate: null,
+            dueDate: dueDate.toISOString().split('T')[0],
+            status: 'belum_lunas'
         });
+
+        saveDataToLocalStorage();
+        alert('Pembayaran baru berhasil ditambahkan.');
+        
+        const room = roomsData.find(r => r.tenantId === tenantId);
+        if (room) {
+             loadKamarDetails(room.id, room.status); 
+        }
+        paymentMonthInput.value = '';
+        paymentAmountInput.value = '';
+    });
 
         // --- Load Pembayaran ---
         function loadPembayaran(tenantId, rentPrice, entryDate) {
@@ -1586,5 +1596,6 @@ function generatePaymentsForTenant(tenantId, entryDateStr, rentPrice) {
         });
 
     </script>
-</body>
+   
+   </body>
 </html>
