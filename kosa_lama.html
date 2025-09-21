@@ -1,3 +1,17 @@
+<script>
+  // Kalau belum login, balikin ke index
+  if (localStorage.getItem("sessionLoginKosa") !== "true") {
+    window.location.href = "index.html";
+  }
+
+  // Tombol logout → hapus session
+  document.getElementById("logoutBtn1").addEventListener("click", function (e) {
+    e.preventDefault();
+    localStorage.removeItem("sessionLoginKosa");
+    window.location.href = "index.html";
+  });
+</script>
+
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -883,7 +897,11 @@
     <nav class="navbar">
         <a href="#" class="logo">KOSKU</a>
         <ul class="nav-links">
-            <li><a href="index.html">Web Kos Baru</a></li>
+            <li>
+  <a href="#" id="logoutBtn1" class="btn-add-room">
+    <i class="fas fa-sign-out-alt"></i> Logout
+  </a>
+</li>
             <li><a href="#">Beranda</a></li>
             <li><a href="#"></a></li>
         </ul>
