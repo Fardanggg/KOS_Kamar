@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Manajemen Kamar Kos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* GLOBAL STYLES & RESETS */
+        :root {
+            --primary-color: #4A90E2; /* Biru cerah */
+            --secondary-color: #50E3C2; /* Hijau tosca */
+            --text-dark: #2C3E50; /* Teks gelap */
+            --text-light: #6B7A8C; /* Teks abu-abu */
+            --bg-light: #F4F7F6; /* Latar belakang ringan */
+            --card-bg: #FFFFFF; /* Latar belakang kartu */
+            --border-color: #E0E6EB; /* Warna border */
+            --success-color: #27AE60; /* Hijau sukses */
+            --danger-color: #E74C3C; /* Merah bahaya */
+            --warning-color: #F39C12; /* Oranye peringatan */
+        }
+
+        /* Penting: box-sizing global untuk mencegah overflow horizontal */
+        html {
+            box-sizing: border-box;
+        }
+        *, *:before, *:after {
+            box-sizing: inherit;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            color: var(--text-dark);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-size: 16px; /* Ukuran font dasar untuk readability */
+            overflow-x: hidden; /* Pastikan body tidak memiliki overflow horizontal */
+        }
+
+        /* CUSTOM SCROLLBAR (Opsional, untuk mempercantik) */
+        ::-webkit-scrollbar {
+            width: 8px; /* Lebar scrollbar vertikal */
+            height: 8px; /* Tinggi scrollbar horizontal */
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-light);
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 10px;
+            border: 2px solid var(--bg-light); /* Padding visual */
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #3A7BBF;
+        }
+
+        /* NAVBAR */
+        .navbar {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar .logo {
+            font-size: 1.6em;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .navbar .nav-links {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+        }
+
+        .navbar .nav-links li {
+            margin-left: 30px;
+        }
+
+        .navbar .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95em;
+            transition: opacity 0.3s ease;
+        }
+
+        .navbar .nav-links a:hover {
+            opacity: 0.8;
+        }
+
+        /* HAMBURGER MENU (for mobile) */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            gap: 5px;
+            z-index: 101; /* Pastikan di atas nav-links saat dibuka */
+        }
+
+        .hamburger .bar {
+            width: 25px;
+            height: 3px;
+            background-color: white;
+            transition: all 0.3s ease;
+        }
+
+        /* MAIN CONTENT */
+        .container {
+            flex-grow: 1;
+            width: 95%;
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 15px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .header h1 {
+            font-size: 2.8em;
+            color: var(--primary-color);
+            margin: 0;
+            font-weight: 700;
+        }
+
+        #addRoomBtn {
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 30px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: block; /* Agar mengambil lebar penuh di mobile */
+            width: fit-content; /* Sesuai konten di desktop */
+            margin-left: auto;
+            margin-right: auto;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #addRoomBtn:hover {
+            background-color: #42C2B1;
+            transform: translateY(-2px);
+        }
+        #addRoomBtn i {
+            font-size: 1.2em;
+        }
+
+        /* ROOM GRID */
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            padding-bottom: 50px;
+        }
+
+        .room-card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .room-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .room-card h3 {
+            font-size: 1.5em;
+            margin-top: 0;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .room-card .status {
+            font-weight: 600;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            text-transform: uppercase;
+            align-self: flex-start;
+        }
+
+        .status.kosong {
+            background-color: #FFE6E6;
+            color: var(--danger-color);
+        }
+
+        .status.terisi {
+            background-color: #E6FFF2;
+            color: var(--success-color);
+        }
+
+        .room-card .action-button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px; /* Diperbesar untuk sentuhan lebih mudah */
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em; /* Diperbesar */
+            font-weight: 500;
+            margin-top: 20px;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            align-self: flex-end;
+            width: 100%; /* Memastikan lebar penuh di mobile */
+            box-sizing: border-box; /* Agar padding tidak menambah lebar */
+        }
+
+        .room-card .action-button:hover {
+            background-color: #3A7BBF;
+            transform: translateY(-2px);
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px; /* Sangat kecil untuk memberi ruang di pinggir */
+            box-sizing: border-box;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            padding: 20px; /* Sedikit lebih kecil untuk mobile */
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%; /* Lebar penuh di mobile */
+            max-width: 600px; /* Batas lebar maksimum */
+            position: relative;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            max-height: 98vh; /* Batasi tinggi modal agar muat di layar */
+            overflow-y: auto; /* SCROLLBAR HANYA DI SINI */
+            box-sizing: border-box;
+            overflow-x: hidden; /* Pastikan tidak ada overflow horizontal di dalam modal-content */
+        }
+
+        .modal.active .modal-content {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 15px; /* Mengurangi margin */
+            text-align: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            color: var(--primary-color);
+            font-size: 1.6em; /* Disesuaikan untuk mobile */
+            font-weight: 600;
+            word-wrap: break-word; /* Mencegah teks terpotong jika terlalu panjang */
+        }
+
+        .close-button {
+            color: var(--text-light);
+            font-size: 28px; /* Ukuran lebih kecil */
+            font-weight: bold;
+            position: absolute;
+            top: 10px; /* Posisi lebih dekat ke tepi */
+            right: 15px;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-button:hover {
+            color: var(--text-dark);
+        }
+
+        .form-group {
+            margin-bottom: 15px; /* Sedikit mengurangi jarak */
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px; /* Sedikit mengurangi jarak */
+            font-weight: 500;
+            color: var(--text-dark);
+            font-size: 0.85em; /* Sedikit lebih kecil */
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="date"],
+        .form-group input[type="number"],
+        .form-group input[type="month"],
+        .form-group select {
+            width: 100%;
+            padding: 10px; /* Mengurangi padding */
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.95em; /* Sedikit lebih kecil */
+            color: var(--text-dark);
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+        }
+
+        .form-group select {
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%234A90E2%22%20d%3D%22M287%2069.4L146.2%20206.5%205.4%2069.4c-1.8-1.8-4.7-1.8-6.5%200l-5.4%205.4c-1.8%201.8-1.8%204.7%200%206.5l142.7%20142.7c1.8%201.8%204.7%201.8%206.5%200l142.7-142.7c1.8-1.8%201.8-4.7%200-6.5l-5.4-5.4c-1.8-1.8-4.7-1.8-6.5%200z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 10px;
+            padding-right: 40px;
+        }
+
+        .status-options {
+            display: flex;
+            gap: 8px; /* Mengurangi gap */
+            margin-bottom: 15px; /* Mengurangi margin */
+            flex-wrap: wrap;
+            justify-content: center; /* Pusat di mobile */
+            width: 100%; 
+        }
+
+        .status-options label {
+            cursor: pointer;
+            background-color: var(--bg-light);
+            padding: 8px 15px; /* Sedikit lebih kecil */
+            border-radius: 8px; 
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-weight: 500;
+            border: 1px solid var(--border-color);
+            white-space: nowrap;
+            font-size: 0.85em; /* Lebih kecil */
+            flex-grow: 1; 
+            text-align: center; 
+            min-width: 100px; /* Pastikan tidak terlalu kecil */
+            flex: 1 1 45%; /* Fleksibel tapi ada batas minimum width untuk 2 kolom */
+            max-width: calc(50% - 4px); /* Setengah lebar - setengah gap */
+        }
+
+        .status-options input[type="radio"] {
+            display: none;
+        }
+
+        .status-options input[type="radio"]:checked + label {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .section-divider {
+            border: 0;
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 20px 0; /* Mengurangi margin */
+        }
+
+        .section-header {
+            color: var(--primary-color);
+            font-size: 1.4em; /* Disesuaikan untuk mobile */
+            margin-top: 20px;
+            margin-bottom: 10px; /* Mengurangi margin */
+            font-weight: 600;
+            text-align: center; 
+        }
+        
+        /* DETAIL & PEMBAYARAN SECTIONS */
+        #detailPenyewa, #pembayaranBulanan {
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px; /* Mengurangi padding */
+            margin-top: 15px; /* Mengurangi margin */
+            background-color: #fcfcfc;
+        }
+
+        #detailPenyewa p {
+            margin-bottom: 6px; /* Lebih kecil */
+            line-height: 1.4; /* Lebih padat */
+            color: var(--text-light);
+            font-size: 0.9em; /* Lebih mudah dibaca */
+            word-wrap: break-word; 
+        }
+
+        #detailPenyewa p strong {
+            color: var(--text-dark);
+            margin-right: 5px;
+        }
+
+        #pembayaranBulanan ul {
+            list-style-type: none;
+            padding: 0;
+            margin-top: 10px; /* Mengurangi margin */
+        }
+
+        #pembayaranBulanan ul li {
+            padding: 10px 0; /* Mengurangi padding */
+            border-bottom: 1px solid #F0F4F7;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 5px; /* Mengurangi gap */
+            font-size: 0.8em; /* Lebih kecil agar muat */
+            color: var(--text-light);
+            width: 100%; 
+        }
+
+        #pembayaranBulanan ul li:last-child {
+            border-bottom: none;
+        }
+
+        #pembayaranBulanan ul li strong {
+            color: var(--text-dark);
+            font-size: 1em;
+        }
+
+        .payment-status-tag {
+            font-weight: 600;
+            padding: 4px 8px; /* Lebih kecil */
+            border-radius: 15px;
+            font-size: 0.7em; /* Lebih kecil */
+            white-space: nowrap;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px; /* Lebih kecil */
+            margin-left: auto; 
+        }
+
+        .payment-status-tag.lunas {
+            background-color: #D4EDDA;
+            color: var(--success-color);
+        }
+
+        .payment-status-tag.belum-lunas {
+            background-color: #F8D7DA;
+            color: var(--danger-color);
+        }
+
+        .payment-status-tag.jatuh-tempo {
+            background-color: #FFF3CD;
+            color: var(--warning-color);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); opacity: 1; }
+            to { transform: scale(1.03); opacity: 0.9; }
+        }
+
+        .payment-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 6px; /* Mengurangi gap */
+            margin-left: auto;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+            margin-top: 8px; /* Pastikan ada jarak vertikal jika membungkus */
+            width: 100%; /* Ambil lebar penuh saat mobile */
+        }
+
+        .payment-item-controls input[type="number"] {
+            flex-grow: 1; 
+            max-width: 100px; /* Batas lebar */
+            padding: 8px; /* Lebih kecil untuk sentuhan */
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            text-align: right;
+            font-size: 0.8em; /* Lebih kecil */
+        }
+
+        .payment-item-controls button {
+            padding: 8px 12px; /* Lebih kecil untuk sentuhan */
+            font-size: 0.8em; /* Lebih kecil */
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            border: none;
+            color: white;
+            background-color: var(--primary-color);
+        }
+
+        .payment-item-controls button:hover {
+            background-color: #3A7BBF;
+            transform: translateY(-1px);
+        }
+
+        /* ADD PAYMENT FORM */
+        #addPaymentForm {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Mengurangi gap */
+            margin-bottom: 15px; /* Mengurangi margin */
+            padding: 12px; /* Mengurangi padding */
+            border: 1px dashed var(--border-color);
+            border-radius: 10px;
+            background-color: #f0f8ff;
+            align-items: flex-end;
+            width: 100%; 
+        }
+
+        #addPaymentForm .form-group-inline {
+            flex: 1;
+            min-width: 120px; /* Mengurangi lebar minimum */
+        }
+
+        #addPaymentForm .form-group-inline label {
+            margin-bottom: 4px; /* Lebih kecil */
+            font-size: 0.75em; /* Lebih kecil */
+            color: var(--text-dark);
+        }
+
+        #addPaymentForm input[type="month"],
+        #addPaymentForm input[type="number"] {
+            width: 100%;
+            padding: 8px; /* Lebih kecil */
+            border-radius: 6px; /* Lebih kecil */
+            border: 1px solid #b8c2cc;
+            font-size: 0.85em; /* Lebih kecil */
+        }
+
+        #addPaymentForm button {
+            padding: 8px 15px; /* Lebih kecil */
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
+            border: none;
+            border-radius: 6px; /* Lebih kecil */
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            font-weight: 600;
+            flex-shrink: 0; 
+            font-size: 0.9em;
+        }
+
+        #addPaymentForm button:hover {
+            background-color: #42C2B1;
+            transform: translateY(-2px);
+        }
+
+        /* BUTTONS FOOTER MODAL */
+        .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px; /* Mengurangi gap */
+            padding-top: 15px; /* Mengurangi padding */
+            border-top: 1px solid var(--border-color);
+            flex-wrap: wrap; 
+        }
+
+        .modal-footer button {
+            padding: 10px 18px; /* Lebih kecil */
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em; /* Lebih kecil */
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            flex-grow: 1; 
+            max-width: 160px; /* Batasi lebar maksimum agar tidak terlalu besar di desktop */
+        }
+        /* Override untuk mobile agar tombol di footer modal 100% */
+        @media (max-width: 480px) {
+            .modal-footer button {
+                width: 100%; 
+                max-width: none; 
+            }
+        }
+
+        .modal-footer .btn-save {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .modal-footer .btn-save:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .modal-footer .btn-cancel {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        .modal-footer .btn-cancel:hover {
+            background-color: #c82333;
+            transform: translateY(-2px);
+        }
+
+        /* FOOTER */
+        .footer {
+            width: 100%;
+            padding: 20px;
+            background-color: var(--text-dark);
+            color: white;
+            text-align: center;
+            margin-top: auto;
+            font-size: 0.85em; 
+            box-sizing: border-box;
+        }
+
+        /* RESPONSIVENESS */
+        /* Perbaikan untuk layar kecil (ponsel) */
+        @media (max-width: 768px) {
+            body {
+                font-size: 14px; /* Sedikit lebih kecil untuk font dasar di mobile */
+            }
+            .navbar {
+                padding: 10px 15px; 
+            }
+            .navbar .nav-links {
+                display: none;
+                flex-direction: column;
+                width: 100%;
+                background-color: var(--primary-color);
+                position: absolute;
+                top: 55px; 
+                left: 0;
+                padding: 10px 0;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                border-top: 1px solid rgba(255,255,255,0.2); 
+            }
+
+            .navbar .nav-links.active {
+                display: flex;
+            }
+
+            .navbar .nav-links li {
+                margin: 8px 0; 
+                text-align: center;
+            }
+            .navbar .nav-links a {
+                padding: 10px 0; 
+                display: block;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .container {
+                margin: 15px auto; /* Mengurangi margin */
+                padding: 10px; /* Mengurangi padding */
+            }
+
+            .header h1 {
+                font-size: 2em; 
+            }
+
+            #addRoomBtn {
+                padding: 12px 20px;
+                font-size: 1em;
+                margin-bottom: 20px;
+            }
+
+            .room-grid {
+                grid-template-columns: 1fr; /* Satu kolom untuk mobile */
+                gap: 15px; /* Mengurangi gap */
+            }
+
+            .room-card {
+                padding: 15px;
+            }
+
+            .room-card h3 {
+                font-size: 1.3em;
+            }
+            .room-card .action-button {
+                padding: 10px 15px;
+                font-size: 0.9em;
+            }
+
+            .modal-content {
+                padding: 15px; /* Mengurangi padding modal */
+            }
+
+            .modal-header h3 {
+                font-size: 1.5em;
+            }
+            
+            /* Pembayaran dan kontrolnya */
+            #pembayaranBulanan ul li {
+                flex-direction: column; 
+                align-items: flex-start; 
+                padding: 8px 0;
+            }
+            #pembayaranBulanan ul li span {
+                width: 100%; 
+                text-align: left;
+            }
+
+            .payment-item-controls {
+                flex-direction: column; 
+                align-items: stretch; 
+                margin-top: 8px; 
+            }
+            .payment-item-controls input[type="number"] {
+                max-width: none; 
+                margin-bottom: 6px; 
+                padding: 6px;
+                font-size: 0.85em;
+            }
+            .payment-item-controls button {
+                width: 100%; 
+                padding: 8px;
+                font-size: 0.85em;
+            }
+
+            #addPaymentForm {
+                flex-direction: column; 
+                align-items: stretch; 
+                padding: 10px;
+            }
+            #addPaymentForm .form-group-inline {
+                min-width: unset;
+            }
+            #addPaymentForm input[type="month"],
+            #addPaymentForm input[type="number"] {
+                padding: 6px;
+                font-size: 0.8em;
+            }
+            #addPaymentForm button {
+                width: 100%;
+                padding: 8px;
+                font-size: 0.85em;
+            }
+        }
+
+        /* Perbaikan khusus untuk mobile kecil (mis. iPhone SE lama, dll) */
+        @media (max-width: 400px) {
+            body {
+                font-size: 13px;
+            }
+            .navbar .logo {
+                font-size: 1.3em;
+            }
+            .header h1 {
+                font-size: 1.6em;
+            }
+            .room-card {
+                padding: 12px;
+            }
+            .room-card h3 {
+                font-size: 1.2em;
+            }
+            .modal-content {
+                padding: 12px;
+                max-width: 95%; /* Agak lebih kecil lagi */
+            }
+            .modal-header h3 {
+                font-size: 1.3em;
+            }
+            .close-button {
+                font-size: 24px;
+                top: 8px;
+                right: 12px;
+            }
+            .form-group label {
+                font-size: 0.8em;
+            }
+            .form-group input, .form-group select {
+                padding: 8px;
+                font-size: 0.85em;
+            }
+            .status-options label {
+                padding: 6px 12px;
+                font-size: 0.75em;
+                min-width: 90px;
+                max-width: calc(50% - 4px);
+            }
+            .section-header {
+                font-size: 1.2em;
+            }
+            #detailPenyewa p {
+                font-size: 0.85em;
+            }
+            #pembayaranBulanan ul li {
+                font-size: 0.75em;
+            }
+            .payment-status-tag {
+                font-size: 0.65em;
+                padding: 3px 6px;
+                margin-top: 4px;
+            }
+            .modal-footer button {
+                padding: 8px 15px;
+                font-size: 0.85em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="#" class="logo">KOSKU</a>
+        <ul class="nav-links">
+            <li><a href="#">Beranda</a></li>
+            <li><a href="#">Tentang</a></li>
+            <li><a href="#">Kontak</a></li>
+        </ul>
+        <div class="hamburger">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+    </nav>
+
+    <div class="container">
+        <header class="header">
+            <h1>Manajemen Kamar Kos</h1>
+            <p style="color: var(--text-light);">Kelola status kamar dan pembayaran penyewa dengan mudah.</p>
+        </header>
+
+        <button id="addRoomBtn">
+            <i class="fas fa-plus-circle"></i> Tambah Kamar Baru
+        </button>
+
+        <section class="room-grid" id="roomGrid">
+            </section>
+    </div>
+
+    <footer class="footer">
+        &copy; 2025 Kamar Kos. All rights reserved. Dibuat dengan ❤️.
+    </footer>
+
+    <div id="kamarModal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div class="modal-header">
+                <h3 id="modalTitle">Detail Kamar</h3>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="modalKamarId" value="">
+
+                <div class="form-group">
+                    <label for="editNamaKamar">Nama Kamar:</label>
+                    <input type="text" id="editNamaKamar" name="edit_nama_kamar" required>
+                </div>
+
+                <div class="form-group" id="statusSelection">
+                    <label>Status Kamar:</label>
+                    <div class="status-options">
+                        <input type="radio" id="statusTersewa" name="kamar_status_modal" value="terisi">
+                        <label for="statusTersewa">Tersewa</label>
+                        <input type="radio" id="statusBelumTersewa" name="kamar_status_modal" value="kosong">
+                        <label for="statusBelumTersewa">Belum Tersewa</label>
+                    </div>
+                </div>
+
+                <div id="inputPenyewaSection" style="display: none;">
+                    <hr class="section-divider">
+                    <h4 class="section-header">Data Penyewa</h4>
+                    <div class="form-group">
+                        <label for="namaPenyewa">Nama Penyewa:</label>
+                        <input type="text" id="namaPenyewa" name="nama_penyewa">
+                    </div>
+                    <div class="form-group">
+                        <label for="ktpPenyewa">Nomor KTP:</label>
+                        <input type="text" id="ktpPenyewa" name="ktp_penyewa">
+                    </div>
+                    <div class="form-group">
+                        <label for="noTeleponPenyewa">No TLP Penyewa:</label>
+                        <input type="text" id="noTeleponPenyewa" name="no_telepon_penyewa">
+                    </div>
+                    <div class="form-group">
+                        <label for="tglMasuk">Tanggal Masuk:</label>
+                        <input type="date" id="tglMasuk" name="tgl_masuk">
+                    </div>
+                    <div class="form-group">
+                        <label for="hargaSewa">Harga Sewa Bulanan:</label>
+                        <input type="number" id="hargaSewa" name="harga_sewa" placeholder="Contoh: 500000" min="0">
+                    </div>
+                </div>
+
+                <div id="detailPenyewa" style="display: none;">
+                    <hr class="section-divider">
+                    <h4 class="section-header">Detail Penyewa Saat Ini</h4>
+                    <p><strong>Nama:</strong> <span id="displayNamaPenyewa"></span></p>
+                    <p><strong>KTP:</strong> <span id="displayKtpPenyewa"></span></p>
+                    <p><strong>No. Telepon:</strong> <span id="displayNoTeleponPenyewa"></span></p>
+                    <p><strong>Tanggal Masuk:</strong> <span id="displayTglMasuk"></span></p>
+                    <p><strong>Harga Sewa:</strong> <span id="displayHargaSewa"></span></p>
+                </div>
+
+                <div id="pembayaranBulanan" style="display: none;">
+                    <hr class="section-divider">
+                    <h4 class="section-header">Pembayaran Bulanan</h4>
+                    
+                    <div id="addPaymentForm">
+                        <div class="form-group-inline">
+                            <label for="paymentMonth">Bulan:</label>
+                            <input type="month" id="paymentMonth">
+                        </div>
+                        <div class="form-group-inline">
+                            <label for="paymentAmount">Jumlah RP.:</label>
+                            <input type="number" id="paymentAmount" placeholder="Contoh: 500000" min="0">
+                        </div>
+                        <button type="button" id="addPaymentBtnPayment">Tambah Pembayaran</button>
+                    </div>
+                    <p id="infoPembayaran" style="font-style: italic; color: var(--text-light); text-align: center;">Memuat data pembayaran...</p>
+                    <ul id="daftarPembayaran">
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-cancel" id="cancelModalBtn">Batal</button>
+                <button type="button" class="btn-save" id="saveModalBtn">Simpan</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const navbar = document.querySelector('.navbar');
+        const navLinks = document.querySelector('.nav-links');
+        const hamburger = document.querySelector('.hamburger');
+        const roomGrid = document.getElementById("roomGrid");
+        const modal = document.getElementById("kamarModal");
+        const closeButton = document.querySelector(".close-button");
+        const cancelButton = document.getElementById("cancelModalBtn");
+        const saveButton = document.getElementById("saveModalBtn");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalKamarId = document.getElementById("modalKamarId");
+
+        // New elements for adding/editing rooms
+        const addRoomBtn = document.getElementById("addRoomBtn");
+        const editNamaKamarInput = document.getElementById("editNamaKamar");
+
+        const statusSelection = document.getElementById("statusSelection");
+        const statusTersewaRadio = document.getElementById("statusTersewa");
+        const statusBelumTersewaRadio = document.getElementById("statusBelumTersewa");
+
+        const inputPenyewaSection = document.getElementById("inputPenyewaSection");
+        const namaPenyewaInput = document.getElementById("namaPenyewa");
+        const ktpPenyewaInput = document.getElementById("ktpPenyewa");
+        const noTeleponPenyewaInput = document.getElementById("noTeleponPenyewa");
+        const tglMasukInput = document.getElementById("tglMasuk");
+        const hargaSewaInput = document.getElementById("hargaSewa");
+
+        const detailPenyewaSection = document.getElementById("detailPenyewa");
+        const displayNamaPenyewa = document.getElementById("displayNamaPenyewa");
+        const displayKtpPenyewa = document.getElementById("displayKtpPenyewa");
+        const displayNoTeleponPenyewa = document.getElementById("displayNoTeleponPenyewa");
+        const displayTglMasuk = document.getElementById("displayTglMasuk");
+        const displayHargaSewa = document.getElementById("displayHargaSewa");
+
+        const pembayaranBulananSection = document.getElementById("pembayaranBulanan");
+        const addPaymentForm = document.getElementById("addPaymentForm");
+        const paymentMonthInput = document.getElementById("paymentMonth");
+        const paymentAmountInput = document.getElementById("paymentAmount");
+        const addPaymentBtnPayment = document.getElementById("addPaymentBtnPayment"); // Renamed for clarity
+        const infoPembayaran = document.getElementById("infoPembayaran");
+        const daftarPembayaran = document.getElementById("daftarPembayaran");
+
+        // --- Data Storage (simulating database with localStorage) ---
+        let roomsData = JSON.parse(localStorage.getItem('roomsData')) || [];
+        let tenantsData = JSON.parse(localStorage.getItem('tenantsData')) || [];
+        let paymentsData = JSON.parse(localStorage.getItem('paymentsData')) || [];
+
+        // Initialize data if not present (first run) or if room count needs adjustment
+        if (roomsData.length === 0 || roomsData.length !== 10 || !roomsData.every((room, i) => room.name === `Kamar ${i + 1}`)) {
+            roomsData = [];
+            for (let i = 1; i <= 10; i++) {
+                roomsData.push({ id: i, name: `Kamar ${i}`, status: 'kosong', tenantId: null });
+            }
+            // Clear associated data if re-initializing rooms
+            tenantsData = [];
+            paymentsData = [];
+            saveDataToLocalStorage();
+        }
+
+        function saveDataToLocalStorage() {
+            localStorage.setItem('roomsData', JSON.stringify(roomsData));
+            localStorage.setItem('tenantsData', JSON.stringify(tenantsData));
+            localStorage.setItem('paymentsData', JSON.stringify(paymentsData));
+            renderRoomCards(); // Re-render cards after data changes
+        }
+
+        function generateUniqueId(dataArray) {
+            const maxId = dataArray.length > 0 ? Math.max(...dataArray.map(item => item.id)) : 0;
+            return maxId + 1;
+        }
+
+        // --- Helper function to format currency ---
+        function formatCurrency(amount) {
+            if (amount === null || amount === undefined || isNaN(amount)) {
+                return 'Rp 0';
+            }
+            return new Intl.NumberFormat('id-ID', {
+                style: 'currency',
+                currency: 'IDR',
+                minimumFractionDigits: 0
+            }).format(amount);
+        }
+
+        // --- Render Room Cards ---
+        function renderRoomCards() {
+            roomGrid.innerHTML = ''; // Clear existing cards
+            roomsData.sort((a, b) => a.id - b.id); // Ensure consistent order
+            roomsData.forEach(room => {
+                const roomCard = document.createElement('div');
+                roomCard.classList.add('room-card');
+
+                const statusClass = room.status === 'kosong' ? 'kosong' : 'terisi';
+                const actionText = room.status === 'kosong' ? 'Isi Penyewa' : 'Lihat Detail';
+
+                roomCard.innerHTML = `
+                    <h3>${room.name}</h3>
+                    <span class="status ${statusClass}">${room.status}</span>
+                    <button class="action-button" data-kamar-id="${room.id}" data-kamar-status="${room.status}">${actionText}</button>
+                `;
+                roomGrid.appendChild(roomCard);
+            });
+            addModalListeners();
+        }
+
+        // --- Add Event Listeners for Modals ---
+        function addModalListeners() {
+            document.querySelectorAll('.action-button').forEach(button => {
+                const newButton = button.cloneNode(true); // Clone to remove old listeners
+                button.parentNode.replaceChild(newButton, button);
+                newButton.addEventListener('click', openModalHandler);
+            });
+        }
+
+        function openModalHandler(event) {
+            event.preventDefault();
+            const kamarId = parseInt(this.dataset.kamarId);
+            const kamarStatus = this.dataset.kamarStatus;
+
+            modalKamarId.value = kamarId;
+            modal.classList.add('active'); // Add active class to show modal with transition
+
+            resetModalDisplay();
+            loadKamarDetails(kamarId, kamarStatus);
+        }
+
+        function resetModalDisplay() {
+            editNamaKamarInput.value = '';
+            namaPenyewaInput.value = '';
+            ktpPenyewaInput.value = '';
+            noTeleponPenyewaInput.value = '';
+            tglMasukInput.value = '';
+            hargaSewaInput.value = '';
+
+            inputPenyewaSection.style.display = 'none';
+            detailPenyewaSection.style.display = 'none';
+            pembayaranBulananSection.style.display = 'none';
+            saveButton.style.display = 'inline-block';
+            
+            daftarPembayaran.innerHTML = '';
+            infoPembayaran.textContent = 'Memuat data pembayaran...';
+
+            paymentMonthInput.value = '';
+            paymentAmountInput.value = '';
+
+            statusBelumTersewaRadio.checked = true; // Default to 'kosong'
+            statusTersewaRadio.checked = false;
+        }
+
+        // --- Load Kamar Details ---
+        function loadKamarDetails(kamarId, kamarStatus) {
+            const room = roomsData.find(r => r.id === kamarId);
+            if (!room) {
+                alert('Kamar tidak ditemukan!');
+                modal.classList.remove('active');
+                return;
+            }
+
+            modalTitle.textContent = `Detail Kamar ${room.name}`;
+            editNamaKamarInput.value = room.name; // Populate room name input
+            
+            if (room.status === 'terisi') {
+                statusTersewaRadio.checked = true;
+                statusBelumTersewaRadio.checked = false;
+            } else {
+                statusBelumTersewaRadio.checked = true;
+                statusTersewaRadio.checked = false;
+            }
+            togglePenyewaSections(room.status);
+
+            if (room.status === 'terisi' && room.tenantId) {
+                const tenant = tenantsData.find(t => t.id === room.tenantId);
+                if (tenant) {
+                    displayNamaPenyewa.textContent = tenant.name;
+                    displayKtpPenyewa.textContent = tenant.ktp;
+                    displayNoTeleponPenyewa.textContent = tenant.phone;
+                    displayTglMasuk.textContent = tenant.entryDate;
+                    displayHargaSewa.textContent = formatCurrency(tenant.rentPrice);
+                    detailPenyewaSection.style.display = 'block';
+
+                    loadPembayaran(tenant.id, tenant.rentPrice, tenant.entryDate);
+                    pembayaranBulananSection.style.display = 'block';
+
+                    // Also populate input fields for editing current tenant
+                    namaPenyewaInput.value = tenant.name;
+                    ktpPenyewaInput.value = tenant.ktp;
+                    noTeleponPenyewaInput.value = tenant.phone;
+                    tglMasukInput.value = tenant.entryDate;
+                    hargaSewaInput.value = tenant.rentPrice;
+
+                    addPaymentBtnPayment.dataset.tenantId = tenant.id;
+
+                } else {
+                    console.error("Tenant not found for occupied room:", room.id);
+                    detailPenyewaSection.innerHTML = '<p style="color:red;">Data penyewa tidak ditemukan, mohon perbaiki status kamar atau isi ulang.</p>';
+                    pembayaranBulananSection.style.display = 'none';
+                    inputPenyewaSection.style.display = 'block'; // Allow user to re-enter tenant data
+                }
+            } else if (room.status === 'kosong') {
+                detailPenyewaSection.style.display = 'none';
+                pembayaranBulananSection.style.display = 'none';
+                inputPenyewaSection.style.display = 'block'; // Allow user to enter new tenant data
+            }
+        }
+
+        // --- Toggle Penyewa Input/Display Sections ---
+        function togglePenyewaSections(status) {
+            if (status === 'terisi') {
+                inputPenyewaSection.style.display = 'block';
+                // detailPenyewaSection.style.display = 'block'; // Displayed only if tenant exists in loadKamarDetails
+                pembayaranBulananSection.style.display = 'block';
+            } else { // 'kosong'
+                inputPenyewaSection.style.display = 'block'; // Always show input for 'kosong' to allow new tenant entry
+                detailPenyewaSection.style.display = 'none';
+                pembayaranBulananSection.style.display = 'none';
+            }
+        }
+
+        document.querySelectorAll('input[name="kamar_status_modal"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                togglePenyewaSections(this.value);
+            });
+        });
+
+        // --- Add Room Button Listener ---
+        addRoomBtn.addEventListener('click', function() {
+            modalKamarId.value = ''; // Indicate new room mode
+            modal.classList.add('active');
+            resetModalDisplay();
+            
+            modalTitle.textContent = 'Tambah Kamar Baru';
+            editNamaKamarInput.value = 'Kamar Baru'; // Default name for new room
+            statusBelumTersewaRadio.checked = true; // Default: kamar baru belum tersewa
+            togglePenyewaSections('kosong'); // Ensure input section is visible for new tenant if needed
+            detailPenyewaSection.style.display = 'none'; // Explicitly hide detail section
+            pembayaranBulananSection.style.display = 'none'; // Explicitly hide payment section
+        });
+
+        // --- Save Kamar Data ---
+        saveButton.addEventListener('click', function() {
+            const kamarId = modalKamarId.value ? parseInt(modalKamarId.value) : null; // Get ID, or null for new room
+            const selectedStatus = document.querySelector('input[name="kamar_status_modal"]:checked').value;
+            
+            const editedRoomName = editNamaKamarInput.value.trim();
+            if (!editedRoomName) {
+                alert('Nama kamar tidak boleh kosong.');
+                return;
+            }
+
+            let currentRoom;
+            let roomIndex = -1;
+
+            if (kamarId) { // Mode edit existing room
+                roomIndex = roomsData.findIndex(r => r.id === kamarId);
+                if (roomIndex === -1) {
+                    alert('Kamar tidak ditemukan!');
+                    return;
+                }
+                currentRoom = roomsData[roomIndex];
+                currentRoom.name = editedRoomName; // Update room name
+            } else { // Mode add new room
+                const newRoomId = generateUniqueId(roomsData);
+                currentRoom = {
+                    id: newRoomId,
+                    name: editedRoomName,
+                    status: 'kosong', // Default status for newly added room
+                    tenantId: null
+                };
+                roomsData.push(currentRoom); // Add new room to array
+                roomIndex = roomsData.length - 1; // Get index of the new room
+            }
+            
+            let success = false;
+            let message = '';
+
+            try {
+                if (selectedStatus === 'terisi') {
+                    const namaPenyewa = namaPenyewaInput.value.trim();
+                    const ktpPenyewa = ktpPenyewaInput.value.trim();
+                    const noTeleponPenyewa = noTeleponPenyewaInput.value.trim();
+                    const tglMasuk = tglMasukInput.value.trim();
+                    const hargaSewa = parseFloat(hargaSewaInput.value);
+
+                    if (!namaPenyewa || !ktpPenyewa || !noTeleponPenyewa || !tglMasuk || isNaN(hargaSewa) || hargaSewa < 0) {
+                        throw new Error('Semua data penyewa harus diisi dengan benar.');
+                    }
+
+                    currentRoom.status = 'terisi';
+
+                    let tenant = tenantsData.find(t => t.roomId === currentRoom.id); // Find tenant by room ID
+                    if (tenant) {
+                        tenant.name = namaPenyewa;
+                        tenant.ktp = ktpPenyewa;
+                        tenant.phone = noTeleponPenyewa;
+                        tenant.entryDate = tglMasuk;
+                        tenant.rentPrice = hargaSewa;
+                    } else {
+                        const newTenantId = generateUniqueId(tenantsData);
+                        tenant = {
+                            id: newTenantId,
+                            roomId: currentRoom.id, // Link to currentRoom.id
+                            name: namaPenyewa,
+                            ktp: ktpPenyewa,
+                            phone: noTeleponPenyewa,
+                            entryDate: tglMasuk,
+                            rentPrice: hargaSewa
+                        };
+                        tenantsData.push(tenant);
+                        currentRoom.tenantId = newTenantId;
+                    }
+
+                    // Generate payments for the tenant
+                    generatePaymentsForTenant(tenant.id, tenant.entryDate, tenant.rentPrice);
+                    
+                    success = true;
+                    message = 'Data kamar dan penyewa berhasil disimpan.';
+
+                } else if (selectedStatus === 'kosong') {
+                    currentRoom.status = 'kosong';
+                    const tenant = tenantsData.find(t => t.roomId === currentRoom.id); // Find tenant by room ID
+                    if (tenant) {
+                        paymentsData = paymentsData.filter(p => p.tenantId !== tenant.id);
+                        tenantsData = tenantsData.filter(t => t.id !== tenant.id);
+                        currentRoom.tenantId = null;
+                    }
+                    success = true;
+                    message = 'Kamar berhasil dikosongkan.';
+                }
+
+                if (success) {
+                    // Update roomsData array (already done for new room in `roomsData.push`)
+                    roomsData[roomIndex] = currentRoom; // Ensure any changes to currentRoom are reflected
+
+                    saveDataToLocalStorage();
+                    modal.classList.remove('active');
+                    // Refresh data after save
+                    const currentRoomInRoomsData = roomsData.find(r => r.id === currentRoom.id);
+                    if (currentRoomInRoomsData) {
+                        renderRoomCards(); // Re-render to show updated status
+                    }
+                } else {
+                    alert(message);
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            }
+        });
+
+        // --- Generate Payments Function ---
+        function generatePaymentsForTenant(tenantId, entryDateStr, rentPrice) {
+            const entryDate = new Date(entryDateStr);
+            const today = new Date();
+            today.setDate(1); 
+            today.setHours(0,0,0,0);
+
+            let currentMonth = new Date(entryDate.getFullYear(), entryDate.getMonth(), 1);
+            currentMonth.setHours(0,0,0,0);
+
+            while (currentMonth <= today) {
+                const monthYear = `${currentMonth.getFullYear()}-${(currentMonth.getMonth() + 1).toString().padStart(2, '0')}`;
+                
+                const existingPayment = paymentsData.find(p => p.tenantId === tenantId && p.monthYear === monthYear);
+
+                if (!existingPayment) {
+                    let dueDate;
+                    // If entry is late in the month (e.g., after 20th), due date for THIS month might be next month
+                    if (currentMonth.getFullYear() === entryDate.getFullYear() && currentMonth.getMonth() === entryDate.getMonth() && entryDate.getDate() > 20) {
+                        dueDate = new Date(entryDate.getFullYear(), entryDate.getMonth() + 1, 20); // Due on 20th of next month
+                    } else {
+                        dueDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 20); // Due on 20th of current month
+                    }
+                    
+                    const newPaymentId = generateUniqueId(paymentsData);
+                    paymentsData.push({
+                        id: newPaymentId,
+                        tenantId: tenantId,
+                        monthYear: monthYear,
+                        jumlah_bayar_expected: rentPrice,
+                        amountPaid: 0,
+                        paymentDate: null,
+                        dueDate: dueDate.toISOString().split('T')[0],
+                        status: 'belum_lunas'
+                    });
+                }
+                currentMonth.setMonth(currentMonth.getMonth() + 1);
+            }
+            // No need to save here, as save is called after generatePaymentsForTenant in saveButton
+            // saveDataToLocalStorage();
+        }
+
+        // --- Add Custom Payment ---
+        addPaymentBtnPayment.addEventListener('click', function() {
+            const tenantId = parseInt(addPaymentBtnPayment.dataset.tenantId);
+            const monthYear = paymentMonthInput.value;
+            const amount = parseFloat(paymentAmountInput.value);
+
+            if (!tenantId || isNaN(tenantId)) {
+                alert('Tenant ID tidak ditemukan. Mohon ulangi proses atau simpan data penyewa terlebih dahulu.');
+                return;
+            }
+            if (!monthYear) {
+                alert('Pilih bulan pembayaran.');
+                return;
+            }
+            if (isNaN(amount) || amount <= 0) {
+                alert('Masukkan jumlah pembayaran yang valid.');
+                return;
+            }
+
+            const existingPayment = paymentsData.find(p => p.tenantId === tenantId && p.monthYear === monthYear);
+
+            if (existingPayment) {
+                alert(`Pembayaran untuk bulan ${new Date(monthYear + '-01').toLocaleString('id-ID', { month: 'long', year: 'numeric' })} sudah ada.`);
+                return;
+            }
+
+            const newPaymentId = generateUniqueId(paymentsData);
+            const dueDate = new Date(new Date(monthYear + '-01').getFullYear(), new Date(monthYear + '-01').getMonth(), 20);
+            
+            paymentsData.push({
+                id: newPaymentId,
+                tenantId: tenantId,
+                monthYear: monthYear,
+                jumlah_bayar_expected: amount,
+                amountPaid: 0,
+                paymentDate: null,
+                dueDate: dueDate.toISOString().split('T')[0],
+                status: 'belum_lunas'
+            });
+
+            saveDataToLocalStorage();
+            alert('Pembayaran baru berhasil ditambahkan.');
+            
+            const room = roomsData.find(r => r.tenantId === tenantId);
+            if (room) {
+                 loadKamarDetails(room.id, room.status); 
+            }
+            paymentMonthInput.value = '';
+            paymentAmountInput.value = '';
+        });
+
+        // --- Load Pembayaran ---
+        function loadPembayaran(tenantId, rentPrice, entryDate) {
+            daftarPembayaran.innerHTML = '';
+            infoPembayaran.style.display = 'block'; // Ensure info is visible initially
+
+            const tenantPayments = paymentsData.filter(p => p.tenantId === tenantId)
+                                                .sort((a, b) => new Date(a.monthYear) - new Date(b.monthYear));
+
+            if (tenantPayments.length === 0) {
+                infoPembayaran.textContent = 'Belum ada data pembayaran.';
+                addPaymentForm.style.display = 'flex'; // Show form even if no payments
+                return;
+            } else {
+                infoPembayaran.style.display = 'none'; // Hide info if payments exist
+                addPaymentForm.style.display = 'flex';
+            }
+
+            tenantPayments.forEach(payment => {
+                const listItem = document.createElement('li');
+                const dueDate = new Date(payment.dueDate);
+                const today = new Date();
+                today.setHours(0,0,0,0);
+
+                let statusText = '';
+                let statusClass = '';
+                let icon = '';
+
+                if (payment.status === 'lunas') {
+                    statusText = 'Lunas';
+                    statusClass = 'lunas';
+                    icon = '<i class="fas fa-check-circle"></i>';
+                } else if (payment.status === 'belum_lunas' && dueDate < today) {
+                    statusText = 'Jatuh Tempo!';
+                    statusClass = 'jatuh-tempo';
+                    icon = '<i class="fas fa-exclamation-triangle"></i>';
+                } else {
+                    statusText = 'Belum Lunas';
+                    statusClass = 'belum-lunas';
+                    icon = '<i class="fas fa-hourglass-half"></i>';
+                }
+
+                const paymentMonthYear = new Date(payment.monthYear + '-01').toLocaleString('id-ID', { month: 'long', year: 'numeric' });
+                
+                listItem.innerHTML = `
+                    <span><strong>${paymentMonthYear}</strong></span>
+                    <span>Diharapkan: ${formatCurrency(payment.jumlah_bayar_expected)}</span>
+                    <span>Jatuh Tempo: ${new Date(payment.dueDate).toLocaleDateString('id-ID')}</span>
+                    <div class="payment-item-controls">
+                `;
+
+                if (payment.status === 'belum_lunas') {
+                    const confirmInputId = `confirmAmount_${payment.id}`;
+                    listItem.querySelector('.payment-item-controls').innerHTML += `
+                        <input type="number" id="${confirmInputId}" value="${payment.jumlah_bayar_expected || rentPrice}" min="0" placeholder="Jumlah Bayar">
+                        <button onclick="confirmPayment(${payment.id}, document.getElementById('${confirmInputId}').value)" class="btn-save"><i class="fas fa-money-bill-wave"></i> Bayar</button>
+                        <span class="payment-status-tag ${statusClass}">${icon} ${statusText}</span>
+                    `;
+                } else {
+                     listItem.querySelector('.payment-item-controls').innerHTML += `
+                        <span>Dibayar: ${formatCurrency(payment.amountPaid)}</span>
+                        <span>Tgl Bayar: ${payment.paymentDate ? new Date(payment.paymentDate).toLocaleDateString('id-ID') : '-'}</span>
+                        <span class="payment-status-tag ${statusClass}">${icon} ${statusText}</span>
+                    `;
+                }
+
+                daftarPembayaran.appendChild(listItem);
+            });
+        }
+
+        // --- Confirm Payment Function ---
+        function confirmPayment(paymentId, amount) {
+            const paymentIndex = paymentsData.findIndex(p => p.id === paymentId);
+
+            if (paymentIndex === -1) {
+                alert('Pembayaran tidak ditemukan!');
+                return;
+            }
+
+            let currentPayment = paymentsData[paymentIndex];
+
+            if (currentPayment.status === 'lunas') {
+                alert('Pembayaran ini sudah lunas.');
+                return;
+            }
+
+            const parsedAmount = parseFloat(amount);
+            if (isNaN(parsedAmount) || parsedAmount < 0) {
+                alert('Jumlah bayar tidak valid. Masukkan angka positif.');
+                return;
+            }
+
+            currentPayment.amountPaid = parsedAmount;
+            currentPayment.paymentDate = new Date().toISOString().split('T')[0];
+            currentPayment.status = 'lunas';
+
+            saveDataToLocalStorage();
+            alert('Pembayaran berhasil dikonfirmasi!');
+            
+            const room = roomsData.find(r => r.tenantId === currentPayment.tenantId);
+            if (room) {
+                 loadKamarDetails(room.id, room.status); 
+            }
+        }
+
+        // --- Close Modal Event Listeners ---
+        closeButton.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        cancelButton.addEventListener('click', () => {
+            modal.classList.remove('active');
+        });
+
+        window.addEventListener('click', (event) => {
+            if (event.target == modal) {
+                modal.classList.remove('active');
+            }
+        });
+
+        // Hamburger menu toggle
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            hamburger.classList.toggle('open'); 
+        });
+
+        // Close nav menu when a link is clicked (for mobile)
+        navLinks.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                if (navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    hamburger.classList.remove('open');
+                }
+            });
+        });
+
+        // Initial render and date initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            renderRoomCards();
+            const today = new Date();
+            const year = today.getFullYear();
+            const month = String(today.getMonth() + 1).padStart(2, '0');
+            const day = String(today.getDate()).padStart(2, '0');
+            
+            if (!tglMasukInput.value) {
+                tglMasukInput.value = `${year}-${month}-${day}`;
+            }
+
+            const currentMonthYear = `${year}-${month}`;
+            paymentMonthInput.value = currentMonthYear;
+        });
+
+    </script>
+</body>
+</html>
