@@ -1,14 +1,19 @@
 <script>
-  // Kalau belum login, balikin ke index
-  if (localStorage.getItem("sessionLoginKosa") !== "true") {
-    window.location.href = "index.html";
-  }
+  document.addEventListener("DOMContentLoaded", function () {
+    // Kalau belum login, balikin ke index
+    if (localStorage.getItem("sessionLoginKosa1") !== "true") {
+      window.location.href = "index.html";
+    }
 
-  // Tombol logout → hapus session
-  document.getElementById("logoutBtn1").addEventListener("click", function (e) {
-    e.preventDefault();
-    localStorage.removeItem("sessionLoginKosa");
-    window.location.href = "index.html";
+    // Tombol logout → hapus session
+    const logoutBtn = document.getElementById("logoutBtn1");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", function (e) {
+        e.preventDefault();
+        localStorage.removeItem("sessionLoginKosa1");
+        window.location.href = "index.html";
+      });
+    }
   });
 </script>
 
@@ -865,10 +870,9 @@
 <body>
     <nav class="navbar">
         <a href="#" class="logo">KOSKU</a>
-        <ul class="nav-links">
             <li>
-  <a href="index.html" id="logoutBtn1" class="btn-add-room">
-    <i class="fas fa-sign-out-alt"></i> Logout
+  <a href="#" id="logoutBtn1" class="btn-add-room">
+    <i class="fas fa-sign-out-alt"></i> Web Kos Baru
   </a>
 </li>
             <li><a href="#">Beranda</a></li>
