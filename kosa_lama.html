@@ -1341,46 +1341,46 @@
         });
 
         // --- Generate Payments Function ---
-        function generatePaymentsForTenant(tenantId, entryDateStr, rentPrice) {
-            const entryDate = new Date(entryDateStr);
-            const today = new Date();
-            today.setDate(1); 
-            today.setHours(0,0,0,0);
+function generatePaymentsForTenant(tenantId, entryDateStr, rentPrice) {
+    const entryDate = new Date(entryDateStr);
+    const today = new Date();
+    today.setDate(1); 
+    today.setHours(0,0,0,0);
 
-            let currentMonth = new Date(entryDate.getFullYear(), entryDate.getMonth(), 1);
-            currentMonth.setHours(0,0,0,0);
+    let currentMonth = new Date(entryDate.getFullYear(), entryDate.getMonth(), 1);
+    currentMonth.setHours(0,0,0,0);
 
-            while (currentMonth <= today) {
-                const monthYear = `${currentMonth.getFullYear()}-${(currentMonth.getMonth() + 1).toString().padStart(2, '0')}`;
-                
-                const existingPayment = paymentsData.find(p => p.tenantId === tenantId && p.monthYear === monthYear);
+    while (currentMonth <= today) {
+        const monthYear = `${currentMonth.getFullYear()}-${(currentMonth.getMonth() + 1).toString().padStart(2, '0')}`;
 
-                if (!existingPayment) {
-                    let dueDate;
-                    // If entry is late in the month (e.g., after 20th), due date for THIS month might be next month
-                    if (currentMonth.getFullYear() === entryDate.getFullYear() && currentMonth.getMonth() === entryDate.getMonth() && entryDate.getDate() > 20) {
-                        dueDate = new Date(entryDate.getFullYear(), entryDate.getMonth() + 1, 20); // Due on 20th of next month
-                    } else {
-                        dueDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 20); // Due on 20th of current month
-                    }
-                    
-                    const newPaymentId = generateUniqueId(paymentsData);
-                    paymentsData.push({
-                        id: newPaymentId,
-                        tenantId: tenantId,
-                        monthYear: monthYear,
-                        jumlah_bayar_expected: rentPrice,
-                        amountPaid: 0,
-                        paymentDate: null,
-                        dueDate: dueDate.toISOString().split('T')[0],
-                        status: 'belum_lunas'
-                    });
-                }
-                currentMonth.setMonth(currentMonth.getMonth() + 1);
-            }
-            // No need to save here, as save is called after generatePaymentsForTenant in saveButton
-            // saveDataToLocalStorage();
+        const existingPayment = paymentsData.find(
+            p => p.tenantId === tenantId && p.monthYear === monthYear
+        );
+
+        if (!existingPayment) {
+            // Jatuh tempo mengikuti tanggal masuk penyewa
+            const dueDate = new Date(
+                currentMonth.getFullYear(),
+                currentMonth.getMonth(),
+                entryDate.getDate()
+            );
+
+            const newPaymentId = generateUniqueId(paymentsData);
+            paymentsData.push({
+                id: newPaymentId,
+                tenantId: tenantId,
+                monthYear: monthYear,
+                jumlah_bayar_expected: rentPrice,
+                amountPaid: 0,
+                paymentDate: null,
+                dueDate: dueDate.toISOString().split('T')[0],
+                status: 'belum_lunas'
+            });
         }
+        currentMonth.setMonth(currentMonth.getMonth() + 1);
+    }
+    // Data akan disimpan lewat saveDataToLocalStorage setelah dipanggil
+}
 
         // --- Add Custom Payment ---
         addPaymentBtnPayment.addEventListener('click', function() {
