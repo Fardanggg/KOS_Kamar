@@ -1393,13 +1393,92 @@ Website ini akan segera diganti dan Anda akan diarahkan ke alamat baru.
 Mohon untuk melakukan <strong>backup</strong> atau <strong>export seluruh data bulanan</strong> agar dapat diisi kembali secara <strong>manual</strong> di situs baru. 
 Perlu diketahui bahwa <strong>fitur import data tidak tersedia</strong> pada versi terbaru. 
 Terima kasih atas pengertiannya dan mohon maaf atas ketidaknyamanannya 🙏<br><br>
-🚨 <strong>Catatan:</strong> Website ini akan dinonaktifkan dalam waktu kurang lebih <strong>3–5 minggu ke depan</strong>. 
+🚨 <strong>Catatan:</strong> Website ini akan dinonaktifkan dalam waktu kurang lebih <strong>1–2 minggu ke depan</strong>. 
 Disarankan untuk mulai mengisi data di situs baru <strong>sejak sekarang</strong> agar tidak menumpuk dan menyulitkan Anda di kemudian hari.
 </p>
 
+    <p class="pw-container">
+  <span class="label">PASSWORD:</span> 
+  <span id="pwText" class="pw-box">KenTangDev2025</span>
+  <button class="btn-copy" onclick="copyPw(this)">Salin</button>
+</p>
 
-    <p>kentangcloud.web.id</p>
-    <p>PASSWORD: KenTangDev2025</p>
+<style>
+  .pw-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: Arial, sans-serif;
+    background: #f9fafb;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+    max-width: 100%;
+    flex-wrap: wrap; /* biar fleksibel kalau layar sempit */
+  }
+  .label {
+    font-weight: bold;
+    color: #374151;
+  }
+  .pw-box {
+    background: #f3f4f6;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-family: monospace;
+    font-size: 14px;
+    border: 1px solid #d1d5db;
+    word-break: break-word;
+  }
+  .btn-copy {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    background: #2563eb;
+    color: white;
+    font-weight: 600;
+    transition: background 0.2s;
+    white-space: nowrap; /* biar tulisan tombol nggak kepotong */
+  }
+  .btn-copy:hover {
+    background: #1d4ed8;
+  }
+  .btn-copy:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+  }
+
+  /* Responsif HP */
+  @media (max-width: 480px) {
+    .pw-container {
+      font-size: 14px;
+      gap: 6px;
+    }
+    .pw-box {
+      font-size: 13px;
+      padding: 5px 10px;
+    }
+    .btn-copy {
+      padding: 5px 10px;
+      font-size: 13px;
+    }
+  }
+</style>
+
+<script>
+function copyPw(btn) {
+  const pw = document.getElementById("pwText").textContent;
+  navigator.clipboard.writeText(pw).then(() => {
+    btn.textContent = "✔  ";
+    btn.disabled = true;
+    setTimeout(() => {
+      btn.textContent = "Salin";
+      btn.disabled = false;
+    }, 1500);
+  });
+}
+</script>
+
     <a href="https://kentangcloud.web.id/kosa_lama.html" class="btn-primary_popup12">Lihat Website Baru  </a>
     <button class="btn-secondary_popup12" onclick="closeAlert()">Batalkan</button>
   </div>
